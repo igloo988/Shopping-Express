@@ -77,17 +77,18 @@
         </button>
       </div>
 
-      <!-- Desktop Header Actions -->
+      <!-- Header Actions (Visible on Mobile & Desktop) -->
       <div class="flex items-center gap-4 sm:gap-5">
-        <button onclick="handleAccountClick()" class="hidden sm:flex flex-col items-center text-sub hover:text-seBlue transition">
-          <i class="fa-brands fa-instagram text-lg"></i>
+        <!-- Account Icon (Updated: Visible on Mobile too) -->
+        <button onclick="handleAccountClick('personal_details')" class="flex flex-col items-center text-sub hover:text-seBlue transition">
+          <i class="fa-regular fa-user text-lg sm:text-xl"></i>
           <span id="account-header-label" class="text-[10px] font-semibold mt-0.5">Account</span>
         </button>
         
         <button onclick="toggleCartDrawer()" class="relative flex flex-col items-center text-sub hover:text-seBlue transition">
           <i class="fa-solid fa-cart-shopping text-lg sm:text-xl"></i>
           <span id="cart-badge" class="absolute -top-1.5 -right-2 bg-seBlue text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
-          <span class="text-[10px] font-semibold mt-0.5 hidden sm:inline">Cart</span>
+          <span class="text-[10px] font-semibold mt-0.5">Cart</span>
         </button>
       </div>
     </div>
@@ -102,22 +103,8 @@
     </div>
   </header>
 
-  <!-- Theme Switcher Bar -->
-  <div class="bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700/60 py-2 px-4 transition-colors">
-    <div class="max-w-7xl mx-auto flex items-center justify-between text-xs">
-      <span class="text-sub flex items-center gap-2 font-medium">
-        <i class="fa-solid fa-palette text-seBlue"></i> Theme Preference:
-      </span>
-      <label class="relative inline-flex items-center cursor-pointer">
-        <input type="checkbox" id="theme-toggle-switch" onchange="toggleDarkMode()" class="sr-only peer">
-        <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:after:border-slate-600 peer-checked:bg-seBlue"></div>
-        <span class="ml-2 text-main text-[11px] font-semibold" id="theme-switch-label">Light Mode</span>
-      </label>
-    </div>
-  </div>
-
-  <!-- Dynamic Main Content Area -->
-  <main id="app" class="flex-grow pb-20">
+  <!-- Dynamic Main Content Area (Updated: pb-28 / pb-36 padding to ensure WhatsApp button isn't covered by bottom sticky bar) -->
+  <main id="app" class="flex-grow pb-28 sm:pb-36">
     <!-- Rendered dynamically -->
   </main>
 
@@ -161,7 +148,6 @@
         <h4 class="text-white font-semibold mb-3">Get in Touch</h4>
         <p class="mb-2"><i class="fa-solid fa-location-dot mr-2 text-seBlue"></i> Pakistan</p>
         <p class="mb-3"><i class="fa-solid fa-phone mr-2 text-seBlue"></i> +92 (300) 1234567</p>
-        <!-- WhatsApp Icon moved here -->
         <a href="https://wa.me/923001234567" target="_blank" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-3 py-1.5 rounded-lg text-xs transition shadow-sm">
           <i class="fa-brands fa-whatsapp text-sm"></i> Chat on WhatsApp
         </a>
@@ -169,10 +155,12 @@
     </div>
   </footer>
 
-  <!-- Mobile Drawer -->
+  <!-- Mobile Drawer Sidebar -->
   <div id="mobile-nav-drawer" class="fixed inset-0 z-50 invisible opacity-0 transition-all duration-300">
     <div onclick="toggleMobileNav()" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
     <div class="absolute left-0 top-0 bottom-0 w-4/5 max-w-xs bg-card shadow-2xl flex flex-col transition-colors duration-200">
+      
+      <!-- Drawer Header -->
       <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
         <div class="flex items-center gap-2">
           <span class="text-seBlue font-bold text-base">Shopping</span>
@@ -180,20 +168,47 @@
         </div>
         <button onclick="toggleMobileNav()" class="text-sub hover:text-seBlue"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
-      <div class="p-4 flex-grow overflow-y-auto space-y-6 text-sm">
-        <div>
-          <h4 class="text-xs font-bold uppercase tracking-wider text-sub mb-3">Navigation</h4>
-          <ul class="space-y-3 font-medium text-main">
-            <li><button onclick="navigateTo('home'); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-solid fa-house text-seBlue w-4"></i> Home Page</button></li>
-            <li><button onclick="handleAccountClick(); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-regular fa-user text-seBlue w-4"></i> Account Dashboard</button></li>
-            <li><button onclick="navigateTo('account', 'wishlist'); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-regular fa-heart text-seBlue w-4"></i> My Wishlist</button></li>
-            <li><button onclick="navigateTo('account', 'order_history'); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-solid fa-box-archive text-seBlue w-4"></i> Order History</button></li>
-            <li><button onclick="scrollToGetInTouch(); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-solid fa-envelope text-seBlue w-4"></i> Get in Touch</button></li>
-          </ul>
+
+      <!-- Drawer Content Area -->
+      <div class="p-4 flex-grow overflow-y-auto flex flex-col justify-between space-y-6 text-sm">
+        <div class="space-y-6">
+          <!-- Main Links -->
+          <div>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-sub mb-3">Navigation</h4>
+            <ul class="space-y-3 font-medium text-main">
+              <li><button onclick="navigateTo('home'); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-solid fa-house text-seBlue w-4"></i> Home Page</button></li>
+              <li><button onclick="handleAccountClick('personal_details'); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-regular fa-user text-seBlue w-4"></i> Account Dashboard</button></li>
+              <li><button onclick="navigateTo('account', 'wishlist'); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-regular fa-heart text-seBlue w-4"></i> My Wishlist</button></li>
+              <li><button onclick="navigateTo('account', 'order_history'); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-solid fa-box-archive text-seBlue w-4"></i> Order History</button></li>
+            </ul>
+          </div>
+
+          <!-- Categories -->
+          <div>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-sub mb-3">Categories</h4>
+            <ul id="mobile-categories-list" class="space-y-2 text-main"></ul>
+          </div>
+
+          <!-- Light/Dark Mode Switcher inside Mobile Sidebar -->
+          <div class="pt-2 border-t border-slate-200 dark:border-slate-700">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-sub mb-3">Appearance</h4>
+            <div class="flex items-center justify-between bg-slate-100 dark:bg-slate-800 p-2.5 rounded-xl">
+              <span class="text-main text-xs font-semibold flex items-center gap-2">
+                <i class="fa-solid fa-moon text-seBlue"></i> Dark Mode
+              </span>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="mobile-sidebar-theme-toggle" onchange="toggleDarkMode()" class="sr-only peer">
+                <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:after:border-slate-600 peer-checked:bg-seBlue"></div>
+              </label>
+            </div>
+          </div>
         </div>
-        <div>
-          <h4 class="text-xs font-bold uppercase tracking-wider text-sub mb-3">Categories</h4>
-          <ul id="mobile-categories-list" class="space-y-2 text-main"></ul>
+
+        <!-- Get In Touch moved to bottom of Mobile Sidebar -->
+        <div class="pt-4 border-t border-slate-200 dark:border-slate-700 mt-auto">
+          <button onclick="scrollToGetInTouch(); toggleMobileNav();" class="flex items-center gap-3 w-full text-left font-semibold text-seBlue hover:text-seBlue-dark">
+            <i class="fa-solid fa-envelope w-4"></i> Get in Touch
+          </button>
         </div>
       </div>
     </div>
@@ -273,10 +288,8 @@
 
     function toggleDarkMode() {
       const isDark = document.documentElement.classList.toggle('dark');
-      const switchEl = document.getElementById('theme-toggle-switch');
-      const labelEl = document.getElementById('theme-switch-label');
-      if (switchEl) switchEl.checked = isDark;
-      if (labelEl) labelEl.innerText = isDark ? 'Dark Mode' : 'Light Mode';
+      const mobileToggle = document.getElementById('mobile-sidebar-theme-toggle');
+      if (mobileToggle) mobileToggle.checked = isDark;
     }
 
     function scrollToGetInTouch() {
@@ -516,13 +529,9 @@
           <!-- User Profile Banner (Header Section) -->
           <div class="bg-card p-6 rounded-2xl border shadow-sm mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-              <!-- Aesthetic Minimal Instagram-Style Profile Avatar -->
-              <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 p-[2px] shadow">
-                <div class="w-full h-full bg-card rounded-full p-[2px] flex items-center justify-center">
-                  <div class="w-full h-full bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-seBlue">
-                    <i class="fa-brands fa-instagram text-2xl sm:text-3xl"></i>
-                  </div>
-                </div>
+              <!-- Simple Clean Person Avatar Icon (Removed Instagram and purple ring) -->
+              <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-slate-100 dark:bg-slate-800 border-2 border-seBlue flex items-center justify-center text-seBlue shadow-sm">
+                <i class="fa-regular fa-user text-2xl sm:text-3xl"></i>
               </div>
               <div>
                 <h2 class="text-xl font-bold text-main flex items-center gap-2">
@@ -868,9 +877,9 @@
       modal.classList.toggle('opacity-0');
     }
 
-    function handleAccountClick() {
+    function handleAccountClick(defaultTab = 'personal_details') {
       if (currentUser) {
-        navigateTo('account');
+        navigateTo('account', defaultTab);
       } else {
         toggleAccountModal();
       }
