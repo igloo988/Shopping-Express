@@ -43,11 +43,6 @@
 </head>
 <body class="font-sans antialiased flex flex-col min-h-screen transition-colors duration-200">
 
-  <!-- Top Announcement Bar -->
-  <div class="bg-seBlue text-white text-xs py-2 px-4 text-center font-semibold tracking-wide">
-    🚀 Cash on Delivery Available Across Pakistan | Free Shipping on Orders Above Rs. 3,000
-  </div>
-
   <!-- Navigation Header -->
   <header class="sticky top-0 z-40 bg-header border-b shadow-sm transition-colors duration-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
@@ -57,7 +52,7 @@
         <i class="fa-solid fa-bars text-xl"></i>
       </button>
 
-      <!-- Brand Logo SVG Replicate -->
+      <!-- Brand Logo -->
       <button onclick="navigateTo('home')" class="flex items-center gap-2 shrink-0 focus:outline-none">
         <svg class="w-8 h-7 sm:w-10 sm:h-8 text-seBlue" viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
           <line x1="5" y1="15" x2="25" y2="15" stroke-width="3" />
@@ -85,9 +80,9 @@
       <!-- Desktop Header Actions -->
       <div class="flex items-center gap-4 sm:gap-5">
         <!-- Account Button -->
-        <button onclick="toggleAccountModal()" class="hidden sm:flex flex-col items-center text-sub hover:text-seBlue transition">
+        <button onclick="handleAccountClick()" class="hidden sm:flex flex-col items-center text-sub hover:text-seBlue transition">
           <i class="fa-regular fa-user text-lg"></i>
-          <span class="text-[10px] font-semibold mt-0.5">Account</span>
+          <span id="account-header-label" class="text-[10px] font-semibold mt-0.5">Account</span>
         </button>
         
         <!-- Cart Drawer Button -->
@@ -109,7 +104,7 @@
     </div>
   </header>
 
-  <!-- Non-Sticky Theme Switcher Strip (Scrolls away naturally) -->
+  <!-- Non-Sticky Theme Switcher Strip -->
   <div class="bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700/60 py-2 px-4 transition-colors">
     <div class="max-w-7xl mx-auto flex items-center justify-between text-xs">
       <span class="text-sub flex items-center gap-2 font-medium">
@@ -124,9 +119,21 @@
   </div>
 
   <!-- Dynamic Page Content -->
-  <main id="app" class="flex-grow">
+  <main id="app" class="flex-grow pb-20">
     <!-- View content dynamically rendered via JS -->
   </main>
+
+  <!-- Bottom Floating Checkout Trigger -->
+  <div id="floating-checkout-bar" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-30 w-11/12 max-w-md hidden">
+    <button onclick="initiateCheckout()" class="w-full bg-seBlue hover:bg-seBlue-dark text-white font-bold py-3 px-6 rounded-full shadow-2xl flex items-center justify-between transition transform active:scale-95">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <span id="floating-cart-count" class="text-xs bg-white/20 px-2 py-0.5 rounded-full">0 Items</span>
+      </div>
+      <span class="text-sm">Proceed to Checkout</span>
+      <span id="floating-cart-total" class="text-xs font-semibold">Rs. 0</span>
+    </button>
+  </div>
 
   <!-- Footer -->
   <footer class="bg-slate-900 text-slate-400 text-xs py-12 border-t border-slate-800 mt-12">
@@ -136,7 +143,7 @@
           <span class="text-seBlue font-bold text-lg">Shopping</span>
           <span class="text-slate-400 font-light text-lg">Express</span>
         </div>
-        <p class="leading-relaxed">Your trusted store in Pakistan offering genuine products, competitive rates, and nationwide Cash on Delivery.</p>
+        <p class="leading-relaxed">Your trusted store in Pakistan offering genuine products, competitive rates, and nationwide shipping.</p>
       </div>
       <div>
         <h4 class="text-white font-semibold mb-3">Quick Navigation</h4>
@@ -148,7 +155,7 @@
       <div>
         <h4 class="text-white font-semibold mb-3">Customer Service</h4>
         <ul class="space-y-2">
-          <li><a href="#" class="hover:text-seBlue transition">Track Your Order</a></li>
+          <li><button onclick="navigateTo('orders')" class="hover:text-seBlue transition">Track Your Order</button></li>
           <li><a href="#" class="hover:text-seBlue transition">Return & Refund Policy</a></li>
         </ul>
       </div>
@@ -173,18 +180,18 @@
       </div>
       <div class="p-4 flex-grow overflow-y-auto space-y-6 text-sm">
         <div>
-          <h4 class="text-xs font-bold uppercase tracking-wider text-sub mb-3">Menu Options</h4>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-sub mb-3">Navigation</h4>
           <ul class="space-y-3 font-medium text-main">
-            <li><button onclick="navigateTo('home'); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-solid fa-house text-seBlue"></i> Home Page</button></li>
-            <li><button onclick="toggleAccountModal(); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-regular fa-user text-seBlue"></i> My Account / Login</button></li>
+            <li><button onclick="navigateTo('home'); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-solid fa-house text-seBlue w-4"></i> Home Page</button></li>
+            <li><button onclick="handleAccountClick(); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-regular fa-user text-seBlue w-4"></i> Account Dashboard</button></li>
+            <li><button onclick="navigateTo('wishlist'); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-regular fa-heart text-seBlue w-4"></i> Wishlist</button></li>
+            <li><button onclick="navigateTo('orders'); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-solid fa-box-archive text-seBlue w-4"></i> Order History & Tracking</button></li>
           </ul>
         </div>
         <div>
           <h4 class="text-xs font-bold uppercase tracking-wider text-sub mb-3">Categories</h4>
-          <ul class="space-y-2 text-main">
-            ${['All', 'Fitness', 'Skincare', 'Electronics'].map(cat => `
-              <li><button onclick="filterCategory('${cat}'); toggleMobileNav();" class="w-full text-left py-1 text-xs hover:text-seBlue"><i class="fa-solid fa-chevron-right text-[10px] text-sub mr-2"></i> ${cat}</button></li>
-            `).join('')}
+          <ul id="mobile-categories-list" class="space-y-2 text-main">
+            <!-- Rendered via JS -->
           </ul>
         </div>
         <div class="pt-4 border-t border-slate-200 dark:border-slate-700">
@@ -201,7 +208,7 @@
     </div>
   </div>
 
-  <!-- Slide-out Cart Drawer -->
+  <!-- Cart Drawer -->
   <div id="cart-drawer" class="fixed inset-0 z-50 invisible opacity-0 transition-all duration-300">
     <div onclick="toggleCartDrawer()" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
     <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-card shadow-2xl flex flex-col transition-colors duration-200">
@@ -217,40 +224,46 @@
           <span>Total Amount:</span>
           <span id="cart-total" class="text-seBlue">Rs. 0</span>
         </div>
-        <button onclick="navigateTo('checkout'); toggleCartDrawer();" class="w-full bg-seBlue hover:bg-seBlue-dark text-white py-3 rounded-lg font-semibold text-sm transition shadow-md">
-          Proceed to Checkout (COD)
+        <button onclick="initiateCheckout(); toggleCartDrawer();" class="w-full bg-seBlue hover:bg-seBlue-dark text-white py-3 rounded-lg font-semibold text-sm transition shadow-md">
+          Proceed to Checkout
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Account Modal -->
+  <!-- Auth Modal -->
   <div id="account-modal" class="fixed inset-0 z-50 invisible opacity-0 transition-all duration-300 flex items-center justify-center p-4">
     <div onclick="toggleAccountModal()" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
     <div class="relative bg-card rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 z-10">
       <button onclick="toggleAccountModal()" class="absolute top-4 right-4 text-sub hover:text-seBlue"><i class="fa-solid fa-xmark"></i></button>
-      <h3 class="text-lg font-bold text-main mb-4">Customer Login</h3>
-      <form onsubmit="event.preventDefault(); alert('Logged in successfully!'); toggleAccountModal();" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-sub mb-1">Email / Mobile Number</label>
-          <input type="text" required class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2.5 rounded-lg text-sm focus:outline-none focus:border-seBlue">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-sub mb-1">Password</label>
-          <input type="password" required class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2.5 rounded-lg text-sm focus:outline-none focus:border-seBlue">
-        </div>
-        <button type="submit" class="w-full bg-seBlue text-white font-bold py-2.5 rounded-lg text-sm hover:bg-seBlue-dark transition">Sign In</button>
-      </form>
+      
+      <div id="auth-form-container">
+        <h3 class="text-lg font-bold text-main mb-1" id="auth-title">Customer Login</h3>
+        <p class="text-xs text-sub mb-4" id="auth-subtitle">Please sign in or register to continue to checkout</p>
+        
+        <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-sub mb-1">Email / Mobile Number</label>
+            <input type="text" id="auth-email" required class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2.5 rounded-lg text-sm focus:outline-none focus:border-seBlue">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-sub mb-1">Password</label>
+            <input type="password" required class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2.5 rounded-lg text-sm focus:outline-none focus:border-seBlue">
+          </div>
+          <button type="submit" class="w-full bg-seBlue text-white font-bold py-2.5 rounded-lg text-sm hover:bg-seBlue-dark transition">Sign In / Register</button>
+        </form>
+      </div>
     </div>
   </div>
 
-  <!-- WhatsApp Quick Support -->
+  <!-- WhatsApp Support -->
   <a href="https://wa.me/923001234567" target="_blank" class="fixed bottom-6 right-6 bg-emerald-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-lg hover:bg-emerald-600 transition z-30">
     <i class="fa-brands fa-whatsapp"></i>
   </a>
 
-  <!-- Frontend Store Script -->
+  <!-- Frontend Logic -->
   <script>
+    const categories = ['All', 'Fitness', 'Skincare', 'Electronics'];
     const products = [
       { id: 1, name: "Portable Mini Rechargeable Massage Gun", category: "Fitness", price: 2150, originalPrice: 2800, rating: "4.8", desc: "High torque muscle recovery massage gun with interchangeable massage heads.", image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500&auto=format&fit=crop&q=60" },
       { id: 2, name: "Anua Peach 70% Niacinamide Serum 30ml", category: "Skincare", price: 3950, originalPrice: 4200, rating: "4.9", desc: "Brightening serum designed to refine skin tone and enhance glow.", image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500&auto=format&fit=crop&q=60" },
@@ -261,12 +274,14 @@
     ];
 
     let cart = JSON.parse(localStorage.getItem('se_cart')) || [];
+    let wishlist = JSON.parse(localStorage.getItem('se_wishlist')) || [];
+    let currentUser = JSON.parse(localStorage.getItem('se_user')) || null;
     let activeCategory = 'All';
     let searchQuery = '';
+    let pendingCheckout = false;
 
     function toggleDarkMode() {
       const isDark = document.documentElement.classList.toggle('dark');
-      
       const switchEl = document.getElementById('theme-toggle-switch');
       const mobileSwitchEl = document.getElementById('mobile-nav-theme-switch');
       const labelEl = document.getElementById('theme-switch-label');
@@ -276,9 +291,25 @@
       if (labelEl) labelEl.innerText = isDark ? 'Dark Mode' : 'Light Mode';
     }
 
+    function renderMobileCategories() {
+      const container = document.getElementById('mobile-categories-list');
+      if (!container) return;
+      container.innerHTML = categories.map(cat => `
+        <li>
+          <button onclick="filterCategory('${cat}'); toggleMobileNav();" class="w-full text-left py-1 text-xs hover:text-seBlue flex items-center">
+            <i class="fa-solid fa-chevron-right text-[10px] text-sub mr-2"></i> ${cat}
+          </button>
+        </li>
+      `).join('');
+    }
+
     function saveCart() {
       localStorage.setItem('se_cart', JSON.stringify(cart));
       updateCartUI();
+    }
+
+    function saveWishlist() {
+      localStorage.setItem('se_wishlist', JSON.stringify(wishlist));
     }
 
     function navigateTo(view, param = null) {
@@ -291,6 +322,12 @@
         app.innerHTML = renderProductDetails(param);
       } else if (view === 'checkout') {
         app.innerHTML = renderCheckout();
+      } else if (view === 'orders') {
+        app.innerHTML = renderOrders();
+      } else if (view === 'wishlist') {
+        app.innerHTML = renderWishlist();
+      } else if (view === 'account') {
+        app.innerHTML = renderAccountProfile();
       }
     }
 
@@ -302,22 +339,11 @@
       });
 
       return `
-        <!-- Hero Banner -->
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div class="bg-gradient-to-r from-seBlue-dark via-seBlue to-slate-800 rounded-2xl p-6 sm:p-12 text-white relative overflow-hidden shadow-xl">
-            <div class="max-w-xl z-10 relative">
-              <span class="bg-white text-seBlue text-[10px] sm:text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">Shopping Express Exclusive</span>
-              <h1 class="text-2xl sm:text-5xl font-extrabold mt-3 sm:mt-4 leading-tight">Modern Storefront, Premium Experience</h1>
-              <p class="text-blue-100 mt-2 sm:mt-3 text-xs sm:text-base">Find genuine products with verified Cash on Delivery across Pakistan.</p>
-            </div>
-          </div>
-        </section>
-
         <!-- Category Selector -->
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-4">
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <h2 class="text-base sm:text-lg font-bold text-main mb-3">Browse Categories</h2>
           <div class="flex flex-wrap gap-2 sm:gap-3">
-            ${['All', 'Fitness', 'Skincare', 'Electronics'].map(cat => `
+            ${categories.map(cat => `
               <button onclick="filterCategory('${cat}')" class="px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs font-semibold border transition ${activeCategory === cat ? 'bg-seBlue text-white border-seBlue shadow-sm' : 'bg-card text-sub border-slate-200 dark:border-slate-700 hover:border-seBlue'}">
                 ${cat}
               </button>
@@ -326,7 +352,7 @@
         </section>
 
         <!-- Product Grid -->
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             ${filtered.length ? filtered.map(p => renderProductCard(p)).join('') : '<p class="col-span-full text-center text-sub py-12">No products match your criteria.</p>'}
           </div>
@@ -335,11 +361,17 @@
     }
 
     function renderProductCard(p) {
+      const cartItem = cart.find(c => c.id === p.id);
+      const qty = cartItem ? cartItem.qty : 0;
+      const isWishlisted = wishlist.includes(p.id);
+
       return `
         <div class="bg-card rounded-xl border overflow-hidden hover:shadow-lg transition flex flex-col group">
-          <div onclick="navigateTo('product', ${p.id})" class="cursor-pointer bg-slate-100 dark:bg-slate-800 aspect-square overflow-hidden relative">
-            <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-            <span class="absolute top-2 left-2 bg-seBlue text-white text-[10px] font-bold px-2 py-0.5 rounded">COD</span>
+          <div class="bg-slate-100 dark:bg-slate-800 aspect-square overflow-hidden relative">
+            <img onclick="navigateTo('product', ${p.id})" src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300 cursor-pointer">
+            <button onclick="toggleWishlist(${p.id})" class="absolute top-2 right-2 bg-white/80 dark:bg-slate-900/80 p-2 rounded-full text-xs text-sub hover:text-rose-500 transition">
+              <i class="${isWishlisted ? 'fa-solid fa-heart text-rose-500' : 'fa-regular fa-heart'}"></i>
+            </button>
           </div>
           <div class="p-4 flex flex-col flex-grow">
             <span class="text-[10px] font-bold uppercase tracking-wider text-seBlue">${p.category}</span>
@@ -349,9 +381,13 @@
                 <span class="text-base font-extrabold text-main">Rs. ${p.price.toLocaleString()}</span>
                 <span class="text-xs text-sub line-through block">Rs. ${p.originalPrice.toLocaleString()}</span>
               </div>
-              <button onclick="addToCart(${p.id})" class="bg-seBlue hover:bg-seBlue-dark text-white px-3.5 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
-                <i class="fa-solid fa-cart-plus"></i> Add
-              </button>
+              
+              <div class="flex items-center gap-2">
+                ${qty > 0 ? `<span class="bg-seBlue-light text-seBlue text-xs font-bold px-2 py-1 rounded-md">${qty} in Cart</span>` : ''}
+                <button onclick="addToCart(${p.id})" class="bg-seBlue hover:bg-seBlue-dark text-white px-3.5 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+                  <i class="fa-solid fa-cart-plus"></i> Add
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -360,6 +396,9 @@
 
     function renderProductDetails(id) {
       const p = products.find(prod => prod.id === id);
+      const cartItem = cart.find(c => c.id === p.id);
+      const qty = cartItem ? cartItem.qty : 0;
+
       return `
         <section class="max-w-5xl mx-auto px-4 py-8 sm:py-10">
           <button onclick="navigateTo('home')" class="text-sub hover:text-seBlue text-xs font-bold mb-6 flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Back to Products</button>
@@ -375,9 +414,12 @@
                 <span class="text-2xl sm:text-3xl font-black text-main">Rs. ${p.price.toLocaleString()}</span>
                 <span class="text-xs sm:text-sm text-sub line-through">Rs. ${p.originalPrice.toLocaleString()}</span>
               </div>
-              <button onclick="addToCart(${p.id})" class="mt-6 sm:mt-8 bg-seBlue hover:bg-seBlue-dark text-white font-semibold py-3 sm:py-3.5 px-6 rounded-xl transition shadow-lg text-center flex items-center justify-center gap-2 text-sm">
-                <i class="fa-solid fa-cart-shopping"></i> Add to Shopping Cart
-              </button>
+              
+              <div class="mt-6 flex items-center gap-4">
+                <button onclick="addToCart(${p.id})" class="bg-seBlue hover:bg-seBlue-dark text-white font-semibold py-3 px-6 rounded-xl transition shadow-md flex items-center gap-2 text-sm">
+                  <i class="fa-solid fa-cart-plus"></i> Add to Cart ${qty > 0 ? `(${qty})` : ''}
+                </button>
+              </div>
             </div>
           </div>
         </section>
@@ -388,24 +430,94 @@
       return `
         <section class="max-w-2xl mx-auto px-4 py-8 sm:py-10">
           <div class="bg-card p-6 sm:p-8 rounded-2xl border shadow-sm">
-            <h2 class="text-xl font-bold text-main mb-6">Cash on Delivery Checkout</h2>
+            <h2 class="text-xl font-bold text-main mb-6">Complete Your Order</h2>
             <form onsubmit="handleOrderSubmit(event)" class="space-y-4">
               <div>
                 <label class="block text-xs font-semibold text-sub mb-1">Full Name</label>
-                <input type="text" required class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2.5 rounded-lg text-sm focus:outline-none focus:border-seBlue">
+                <input type="text" value="${currentUser ? currentUser.email.split('@')[0] : ''}" required class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2.5 rounded-lg text-sm focus:outline-none focus:border-seBlue">
               </div>
               <div>
-                <label class="block text-xs font-semibold text-sub mb-1">WhatsApp / Contact Number</label>
-                <input type="tel" required placeholder="03001234567" class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2.5 rounded-lg text-sm focus:outline-none focus:border-seBlue">
+                <label class="block text-xs font-semibold text-sub mb-1">Shipping Address</label>
+                <textarea required rows="3" class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2.5 rounded-lg text-sm focus:outline-none focus:border-seBlue" placeholder="House / Flat #, Street, Area, City"></textarea>
               </div>
-              <div>
-                <label class="block text-xs font-semibold text-sub mb-1">Complete Address</label>
-                <textarea required rows="3" class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2.5 rounded-lg text-sm focus:outline-none focus:border-seBlue"></textarea>
+
+              <!-- Payment Method Selection -->
+              <div class="pt-2">
+                <label class="block text-xs font-semibold text-sub mb-2">Payment Option</label>
+                <div class="grid grid-cols-2 gap-3">
+                  <label class="border border-seBlue bg-seBlue-light/20 p-3 rounded-xl flex items-center gap-3 cursor-pointer">
+                    <input type="radio" name="payment" value="cod" checked class="accent-seBlue">
+                    <div>
+                      <span class="block text-xs font-bold text-main">Cash on Delivery</span>
+                      <span class="text-[10px] text-sub">Pay at doorstep</span>
+                    </div>
+                  </label>
+                  <label class="border border-slate-200 dark:border-slate-700 p-3 rounded-xl flex items-center gap-3 cursor-pointer hover:border-seBlue">
+                    <input type="radio" name="payment" value="online" class="accent-seBlue">
+                    <div>
+                      <span class="block text-xs font-bold text-main">Online Payment</span>
+                      <span class="text-[10px] text-sub">Card / JazzCash / EasyPaisa</span>
+                    </div>
+                  </label>
+                </div>
               </div>
-              <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 rounded-xl transition shadow-md mt-4 text-sm">
-                Confirm Order
+
+              <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 rounded-xl transition shadow-md mt-6 text-sm">
+                Place Order Now
               </button>
             </form>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderOrders() {
+      return `
+        <section class="max-w-4xl mx-auto px-4 py-8">
+          <h2 class="text-xl font-bold text-main mb-6"><i class="fa-solid fa-box-archive text-seBlue mr-2"></i> Order History & Live Tracking</h2>
+          <div class="space-y-4">
+            <div class="bg-card p-6 rounded-2xl border shadow-sm">
+              <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4 mb-4 gap-2">
+                <div>
+                  <span class="text-xs text-sub">Order ID: #SE-98241</span>
+                  <h4 class="text-sm font-bold text-main">Status: <span class="text-emerald-500">On the Way</span></h4>
+                </div>
+                <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1 rounded-full">In Transit</span>
+              </div>
+              <p class="text-xs text-sub mb-3">Estimated Delivery: Within 24-48 Hours</p>
+              <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                <div class="bg-seBlue h-2 rounded-full w-3/4"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderWishlist() {
+      const items = products.filter(p => wishlist.includes(p.id));
+      return `
+        <section class="max-w-4xl mx-auto px-4 py-8">
+          <h2 class="text-xl font-bold text-main mb-6"><i class="fa-regular fa-heart text-rose-500 mr-2"></i> My Saved Wishlist</h2>
+          ${items.length ? `
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              ${items.map(p => renderProductCard(p)).join('')}
+            </div>
+          ` : '<p class="text-sub text-xs">Your wishlist is currently empty.</p>'}
+        </section>
+      `;
+    }
+
+    function renderAccountProfile() {
+      return `
+        <section class="max-w-2xl mx-auto px-4 py-8">
+          <div class="bg-card p-6 rounded-2xl border shadow-sm">
+            <h2 class="text-xl font-bold text-main mb-4">Account Overview</h2>
+            <p class="text-xs text-sub mb-4">Logged in as: <span class="font-bold text-main">${currentUser ? currentUser.email : 'User'}</span></p>
+            <div class="flex gap-3">
+              <button onclick="navigateTo('orders')" class="bg-seBlue text-white text-xs font-bold px-4 py-2 rounded-lg">View Orders</button>
+              <button onclick="logout()" class="bg-rose-500 text-white text-xs font-bold px-4 py-2 rounded-lg">Sign Out</button>
+            </div>
           </div>
         </section>
       `;
@@ -430,7 +542,20 @@
         cart.push({ ...p, qty: 1 });
       }
       saveCart();
-      toggleCartDrawer();
+      if (document.getElementById('app').innerHTML.includes('Browse Categories')) {
+        navigateTo('home');
+      }
+    }
+
+    function updateCartQty(id, delta) {
+      const item = cart.find(c => c.id === id);
+      if (item) {
+        item.qty += delta;
+        if (item.qty <= 0) {
+          cart = cart.filter(c => c.id !== id);
+        }
+      }
+      saveCart();
     }
 
     function removeFromCart(id) {
@@ -438,8 +563,21 @@
       saveCart();
     }
 
+    function toggleWishlist(id) {
+      if (wishlist.includes(id)) {
+        wishlist = wishlist.filter(wId => wId !== id);
+      } else {
+        wishlist.push(id);
+      }
+      saveWishlist();
+      navigateTo('home');
+    }
+
     function updateCartUI() {
-      document.getElementById('cart-badge').innerText = cart.reduce((acc, item) => acc + item.qty, 0);
+      const totalCount = cart.reduce((acc, item) => acc + item.qty, 0);
+      const totalAmount = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+      
+      document.getElementById('cart-badge').innerText = totalCount;
       const cartContainer = document.getElementById('cart-items');
       
       if (cart.length === 0) {
@@ -451,16 +589,32 @@
               <img src="${item.image}" class="w-12 h-12 rounded object-cover">
               <div>
                 <h4 class="text-xs font-semibold text-main line-clamp-1">${item.name}</h4>
-                <span class="text-xs text-sub">Rs. ${item.price.toLocaleString()} x ${item.qty}</span>
+                <span class="text-xs text-sub">Rs. ${item.price.toLocaleString()}</span>
               </div>
             </div>
-            <button onclick="removeFromCart(${item.id})" class="text-rose-500 hover:text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button>
+            <div class="flex items-center gap-3">
+              <div class="flex items-center border border-slate-200 dark:border-slate-700 rounded-lg">
+                <button onclick="updateCartQty(${item.id}, -1)" class="px-2 py-0.5 text-sub hover:text-seBlue text-xs">-</button>
+                <span class="px-2 text-xs font-bold text-main">${item.qty}</span>
+                <button onclick="updateCartQty(${item.id}, 1)" class="px-2 py-0.5 text-sub hover:text-seBlue text-xs">+</button>
+              </div>
+              <button onclick="removeFromCart(${item.id})" class="text-rose-500 hover:text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button>
+            </div>
           </div>
         `).join('');
       }
 
-      const total = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
-      document.getElementById('cart-total').innerText = `Rs. ${total.toLocaleString()}`;
+      document.getElementById('cart-total').innerText = `Rs. ${totalAmount.toLocaleString()}`;
+
+      // Update Floating Checkout Trigger Bar
+      const floatBar = document.getElementById('floating-checkout-bar');
+      if (totalCount > 0) {
+        floatBar.classList.remove('hidden');
+        document.getElementById('floating-cart-count').innerText = `${totalCount} Item${totalCount > 1 ? 's' : ''}`;
+        document.getElementById('floating-cart-total').innerText = `Rs. ${totalAmount.toLocaleString()}`;
+      } else {
+        floatBar.classList.add('hidden');
+      }
     }
 
     function toggleCartDrawer() {
@@ -481,17 +635,66 @@
       modal.classList.toggle('opacity-0');
     }
 
+    function handleAccountClick() {
+      if (currentUser) {
+        navigateTo('account');
+      } else {
+        toggleAccountModal();
+      }
+    }
+
+    function initiateCheckout() {
+      if (!currentUser) {
+        pendingCheckout = true;
+        toggleAccountModal();
+      } else {
+        navigateTo('checkout');
+      }
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value;
+      currentUser = { email };
+      localStorage.setItem('se_user', JSON.stringify(currentUser));
+      updateAuthUI();
+      toggleAccountModal();
+
+      if (pendingCheckout) {
+        pendingCheckout = false;
+        navigateTo('checkout');
+      } else {
+        navigateTo('account');
+      }
+    }
+
+    function logout() {
+      currentUser = null;
+      localStorage.removeItem('se_user');
+      updateAuthUI();
+      navigateTo('home');
+    }
+
+    function updateAuthUI() {
+      const label = document.getElementById('account-header-label');
+      if (label) {
+        label.innerText = currentUser ? 'Profile' : 'Account';
+      }
+    }
+
     function handleOrderSubmit(e) {
       e.preventDefault();
       cart = [];
       saveCart();
-      alert("Order placed successfully! Thank you for shopping with Shopping Express.");
-      navigateTo('home');
+      alert("Order placed successfully! Track your shipment inside your Order History.");
+      navigateTo('orders');
     }
 
-    // Initialize Store
+    // Initialization
+    renderMobileCategories();
     navigateTo('home');
     updateCartUI();
+    updateAuthUI();
   </script>
 </body>
 </html>
