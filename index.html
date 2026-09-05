@@ -50,28 +50,30 @@
 
   <!-- Navigation Header -->
   <header class="sticky top-0 z-40 bg-header border-b shadow-sm transition-colors duration-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
       
+      <!-- Mobile Hamburger Button (3 lines) -->
+      <button onclick="toggleMobileNav()" class="md:hidden p-2 text-main hover:text-seBlue focus:outline-none" title="Open Navigation Menu">
+        <i class="fa-solid fa-bars text-xl"></i>
+      </button>
+
       <!-- Brand Logo SVG Replicate -->
       <button onclick="navigateTo('home')" class="flex items-center gap-2 shrink-0 focus:outline-none">
-        <svg class="w-10 h-8 text-seBlue" viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-          <!-- Motion Lines -->
+        <svg class="w-8 h-7 sm:w-10 sm:h-8 text-seBlue" viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
           <line x1="5" y1="15" x2="25" y2="15" stroke-width="3" />
           <line x1="2" y1="25" x2="22" y2="25" stroke-width="3" />
           <line x1="8" y1="35" x2="28" y2="35" stroke-width="3" />
-          <!-- Cart Body -->
           <polyline points="25 10 32 10 42 40 82 40 90 18 35 18" />
-          <!-- Wheels -->
           <circle cx="48" cy="48" r="5" fill="currentColor" />
           <circle cx="76" cy="48" r="5" fill="currentColor" />
         </svg>
-        <div class="flex items-baseline text-2xl font-bold tracking-tight">
+        <div class="flex items-baseline text-xl sm:text-2xl font-bold tracking-tight">
           <span class="text-seBlue font-extrabold">Shopping</span>
           <span class="text-seGray font-normal ml-0.5">Express</span>
         </div>
       </button>
 
-      <!-- Live Search Bar -->
+      <!-- Search Bar (Desktop) -->
       <div class="hidden md:flex flex-1 max-w-xl relative">
         <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Search products, cosmetics, electronics..." 
                class="w-full pl-4 pr-10 py-2.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm text-main focus:outline-none focus:border-seBlue transition">
@@ -80,30 +82,46 @@
         </button>
       </div>
 
-      <!-- Header Controls & Actions -->
-      <div class="flex items-center gap-5">
-        
-        <!-- Dark Mode Toggle -->
-        <button onclick="toggleDarkMode()" class="p-2 rounded-full text-sub hover:text-seBlue transition" title="Toggle Theme">
-          <i id="theme-icon" class="fa-solid fa-moon text-lg"></i>
-        </button>
-
+      <!-- Desktop Header Actions -->
+      <div class="flex items-center gap-4 sm:gap-5">
         <!-- Account Button -->
-        <button onclick="toggleAccountModal()" class="flex flex-col items-center text-sub hover:text-seBlue transition">
+        <button onclick="toggleAccountModal()" class="hidden sm:flex flex-col items-center text-sub hover:text-seBlue transition">
           <i class="fa-regular fa-user text-lg"></i>
           <span class="text-[10px] font-semibold mt-0.5">Account</span>
         </button>
         
         <!-- Cart Drawer Button -->
         <button onclick="toggleCartDrawer()" class="relative flex flex-col items-center text-sub hover:text-seBlue transition">
-          <i class="fa-solid fa-cart-shopping text-lg"></i>
+          <i class="fa-solid fa-cart-shopping text-lg sm:text-xl"></i>
           <span id="cart-badge" class="absolute -top-1.5 -right-2 bg-seBlue text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
-          <span class="text-[10px] font-semibold mt-0.5">Cart</span>
+          <span class="text-[10px] font-semibold mt-0.5 hidden sm:inline">Cart</span>
         </button>
+      </div>
+    </div>
 
+    <!-- Mobile Search Bar Strip -->
+    <div class="px-4 pb-3 pt-1 md:hidden bg-header">
+      <div class="relative">
+        <input type="text" oninput="handleSearch(this.value)" placeholder="Search products..." 
+               class="w-full pl-4 pr-10 py-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-main focus:outline-none focus:border-seBlue">
+        <i class="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-xs text-sub"></i>
       </div>
     </div>
   </header>
+
+  <!-- Non-Sticky Theme Switcher Strip (Scrolls away naturally) -->
+  <div class="bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700/60 py-2 px-4 transition-colors">
+    <div class="max-w-7xl mx-auto flex items-center justify-between text-xs">
+      <span class="text-sub flex items-center gap-2 font-medium">
+        <i class="fa-solid fa-palette text-seBlue"></i> Theme Preference:
+      </span>
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input type="checkbox" id="theme-toggle-switch" onchange="toggleDarkMode()" class="sr-only peer">
+        <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:after:border-slate-600 peer-checked:bg-seBlue"></div>
+        <span class="ml-2 text-main text-[11px] font-semibold" id="theme-switch-label">Light Mode</span>
+      </label>
+    </div>
+  </div>
 
   <!-- Dynamic Page Content -->
   <main id="app" class="flex-grow">
@@ -141,6 +159,47 @@
       </div>
     </div>
   </footer>
+
+  <!-- Slide-Out Mobile Navigation Drawer -->
+  <div id="mobile-nav-drawer" class="fixed inset-0 z-50 invisible opacity-0 transition-all duration-300">
+    <div onclick="toggleMobileNav()" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
+    <div class="absolute left-0 top-0 bottom-0 w-4/5 max-w-xs bg-card shadow-2xl flex flex-col transition-colors duration-200">
+      <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-seBlue font-bold text-base">Shopping</span>
+          <span class="text-sub font-light text-base">Express</span>
+        </div>
+        <button onclick="toggleMobileNav()" class="text-sub hover:text-seBlue"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <div class="p-4 flex-grow overflow-y-auto space-y-6 text-sm">
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-sub mb-3">Menu Options</h4>
+          <ul class="space-y-3 font-medium text-main">
+            <li><button onclick="navigateTo('home'); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-solid fa-house text-seBlue"></i> Home Page</button></li>
+            <li><button onclick="toggleAccountModal(); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-regular fa-user text-seBlue"></i> My Account / Login</button></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-sub mb-3">Categories</h4>
+          <ul class="space-y-2 text-main">
+            ${['All', 'Fitness', 'Skincare', 'Electronics'].map(cat => `
+              <li><button onclick="filterCategory('${cat}'); toggleMobileNav();" class="w-full text-left py-1 text-xs hover:text-seBlue"><i class="fa-solid fa-chevron-right text-[10px] text-sub mr-2"></i> ${cat}</button></li>
+            `).join('')}
+          </ul>
+        </div>
+        <div class="pt-4 border-t border-slate-200 dark:border-slate-700">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-sub mb-3">Display Settings</h4>
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-main">Dark Mode</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="mobile-nav-theme-switch" onchange="toggleDarkMode()" class="sr-only peer">
+              <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:after:border-slate-600 peer-checked:bg-seBlue"></div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Slide-out Cart Drawer -->
   <div id="cart-drawer" class="fixed inset-0 z-50 invisible opacity-0 transition-all duration-300">
@@ -207,8 +266,14 @@
 
     function toggleDarkMode() {
       const isDark = document.documentElement.classList.toggle('dark');
-      const icon = document.getElementById('theme-icon');
-      icon.className = isDark ? 'fa-solid fa-sun text-amber-400 text-lg' : 'fa-solid fa-moon text-lg';
+      
+      const switchEl = document.getElementById('theme-toggle-switch');
+      const mobileSwitchEl = document.getElementById('mobile-nav-theme-switch');
+      const labelEl = document.getElementById('theme-switch-label');
+
+      if (switchEl) switchEl.checked = isDark;
+      if (mobileSwitchEl) mobileSwitchEl.checked = isDark;
+      if (labelEl) labelEl.innerText = isDark ? 'Dark Mode' : 'Light Mode';
     }
 
     function saveCart() {
@@ -239,21 +304,21 @@
       return `
         <!-- Hero Banner -->
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div class="bg-gradient-to-r from-seBlue-dark via-seBlue to-slate-800 rounded-2xl p-8 sm:p-12 text-white relative overflow-hidden shadow-xl">
+          <div class="bg-gradient-to-r from-seBlue-dark via-seBlue to-slate-800 rounded-2xl p-6 sm:p-12 text-white relative overflow-hidden shadow-xl">
             <div class="max-w-xl z-10 relative">
-              <span class="bg-white text-seBlue text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">Shopping Express Exclusive</span>
-              <h1 class="text-3xl sm:text-5xl font-extrabold mt-4 leading-tight">Modern Storefront, Premium Experience</h1>
-              <p class="text-blue-100 mt-3 text-sm sm:text-base">Find genuine products with verified Cash on Delivery across Pakistan.</p>
+              <span class="bg-white text-seBlue text-[10px] sm:text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">Shopping Express Exclusive</span>
+              <h1 class="text-2xl sm:text-5xl font-extrabold mt-3 sm:mt-4 leading-tight">Modern Storefront, Premium Experience</h1>
+              <p class="text-blue-100 mt-2 sm:mt-3 text-xs sm:text-base">Find genuine products with verified Cash on Delivery across Pakistan.</p>
             </div>
           </div>
         </section>
 
         <!-- Category Selector -->
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <h2 class="text-lg font-bold text-main mb-4">Browse Categories</h2>
-          <div class="flex flex-wrap gap-3">
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-4">
+          <h2 class="text-base sm:text-lg font-bold text-main mb-3">Browse Categories</h2>
+          <div class="flex flex-wrap gap-2 sm:gap-3">
             ${['All', 'Fitness', 'Skincare', 'Electronics'].map(cat => `
-              <button onclick="filterCategory('${cat}')" class="px-5 py-2 rounded-full text-xs font-semibold border transition ${activeCategory === cat ? 'bg-seBlue text-white border-seBlue shadow-sm' : 'bg-card text-sub border-slate-200 dark:border-slate-700 hover:border-seBlue'}">
+              <button onclick="filterCategory('${cat}')" class="px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs font-semibold border transition ${activeCategory === cat ? 'bg-seBlue text-white border-seBlue shadow-sm' : 'bg-card text-sub border-slate-200 dark:border-slate-700 hover:border-seBlue'}">
                 ${cat}
               </button>
             `).join('')}
@@ -262,7 +327,7 @@
 
         <!-- Product Grid -->
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             ${filtered.length ? filtered.map(p => renderProductCard(p)).join('') : '<p class="col-span-full text-center text-sub py-12">No products match your criteria.</p>'}
           </div>
         </section>
@@ -296,21 +361,21 @@
     function renderProductDetails(id) {
       const p = products.find(prod => prod.id === id);
       return `
-        <section class="max-w-5xl mx-auto px-4 py-10">
+        <section class="max-w-5xl mx-auto px-4 py-8 sm:py-10">
           <button onclick="navigateTo('home')" class="text-sub hover:text-seBlue text-xs font-bold mb-6 flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Back to Products</button>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 bg-card p-6 sm:p-8 rounded-2xl border shadow-sm">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 bg-card p-6 sm:p-8 rounded-2xl border shadow-sm">
             <div class="aspect-square rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800">
               <img src="${p.image}" class="w-full h-full object-cover">
             </div>
             <div class="flex flex-col justify-center">
               <span class="text-xs font-bold uppercase tracking-wider text-seBlue">${p.category}</span>
-              <h1 class="text-2xl font-bold text-main mt-2">${p.name}</h1>
-              <p class="text-sub text-sm mt-4 leading-relaxed">${p.desc}</p>
+              <h1 class="text-xl sm:text-2xl font-bold text-main mt-2">${p.name}</h1>
+              <p class="text-sub text-xs sm:text-sm mt-4 leading-relaxed">${p.desc}</p>
               <div class="mt-6 flex items-baseline gap-3">
-                <span class="text-3xl font-black text-main">Rs. ${p.price.toLocaleString()}</span>
-                <span class="text-sm text-sub line-through">Rs. ${p.originalPrice.toLocaleString()}</span>
+                <span class="text-2xl sm:text-3xl font-black text-main">Rs. ${p.price.toLocaleString()}</span>
+                <span class="text-xs sm:text-sm text-sub line-through">Rs. ${p.originalPrice.toLocaleString()}</span>
               </div>
-              <button onclick="addToCart(${p.id})" class="mt-8 bg-seBlue hover:bg-seBlue-dark text-white font-semibold py-3.5 px-6 rounded-xl transition shadow-lg text-center flex items-center justify-center gap-2">
+              <button onclick="addToCart(${p.id})" class="mt-6 sm:mt-8 bg-seBlue hover:bg-seBlue-dark text-white font-semibold py-3 sm:py-3.5 px-6 rounded-xl transition shadow-lg text-center flex items-center justify-center gap-2 text-sm">
                 <i class="fa-solid fa-cart-shopping"></i> Add to Shopping Cart
               </button>
             </div>
@@ -321,7 +386,7 @@
 
     function renderCheckout() {
       return `
-        <section class="max-w-2xl mx-auto px-4 py-10">
+        <section class="max-w-2xl mx-auto px-4 py-8 sm:py-10">
           <div class="bg-card p-6 sm:p-8 rounded-2xl border shadow-sm">
             <h2 class="text-xl font-bold text-main mb-6">Cash on Delivery Checkout</h2>
             <form onsubmit="handleOrderSubmit(event)" class="space-y-4">
@@ -337,7 +402,7 @@
                 <label class="block text-xs font-semibold text-sub mb-1">Complete Address</label>
                 <textarea required rows="3" class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2.5 rounded-lg text-sm focus:outline-none focus:border-seBlue"></textarea>
               </div>
-              <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 rounded-xl transition shadow-md mt-4">
+              <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 rounded-xl transition shadow-md mt-4 text-sm">
                 Confirm Order
               </button>
             </form>
@@ -400,6 +465,12 @@
 
     function toggleCartDrawer() {
       const drawer = document.getElementById('cart-drawer');
+      drawer.classList.toggle('invisible');
+      drawer.classList.toggle('opacity-0');
+    }
+
+    function toggleMobileNav() {
+      const drawer = document.getElementById('mobile-nav-drawer');
       drawer.classList.toggle('invisible');
       drawer.classList.toggle('opacity-0');
     }
