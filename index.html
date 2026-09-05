@@ -1,334 +1,837 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>App Storefront</title>
+  <title>Shopping Express | Online Shopping in Pakistan</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            seBlue: {
+              DEFAULT: '#3498db',
+              dark: '#2980b9',
+              light: '#ebf5fb'
+            },
+            seGray: {
+              DEFAULT: '#7f8c8d',
+              dark: '#34495e',
+              light: '#bdc3c7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    :root {
-      --primary-blue: #007AFF;
-      --danger-red: #DC3545;
-      --text-dark: #222222;
-      --bg-light: #F8F9FA;
-      --border-color: #E5E5EA;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-
-    body { background-color: var(--bg-light); color: var(--text-dark); padding-bottom: 80px; }
-
-    /* Sticky Header */
-    .sticky-header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: #ffffff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border-color);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-
-    .header-right { display: flex; align-items: center; gap: 12px; }
-
-    /* Fix 9: Header Profile Icon */
-    .profile-avatar-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: #E0E0E0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border: 1px solid var(--border-color);
-    }
-
-    /* Side Drawer / Toggle Bar */
-    .toggle-menu { display: none; position: fixed; top: 0; left: 0; width: 250px; height: 100%; background: #fff; z-index: 200; padding: 20px; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
-    .toggle-menu.active { display: block; }
-    
-    /* Fix 7: Category list styling with '-' instead of '>' */
-    .menu-category-list { list-style: none; margin-top: 20px; }
-    .menu-category-list li { margin-bottom: 12px; }
-    .menu-category-list a { text-decoration: none; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
-
-    /* Fix 6: Red Log Out Button */
-    .btn-logout {
-      background-color: var(--danger-red);
-      color: #FFFFFF;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 20px;
-    }
-
-    /* Product Grid */
-    .catalog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; padding: 16px; }
-
-    /* Product Card */
-    .product-card {
-      position: relative;
-      background: #fff;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Fix 9: Heart on Top-Left */
-    .card-heart-btn {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      right: auto;
-      background: rgba(255, 255, 255, 0.9);
-      border: none;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    }
-
-    .card-img { width: 100%; height: 140px; object-fit: cover; border-radius: 6px; cursor: pointer; }
-
-    /* Fix 2: Aesthetic Quantity Controls & Blue Badge */
-    .qty-controls { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
-    .btn-qty {
-      background-color: var(--primary-blue);
-      color: #fff;
-      border: none;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    /* Fix 2: Order count in blue color */
-    .order-badge-blue {
-      background-color: var(--primary-blue);
-      color: #FFFFFF;
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    /* Cart Drawer / View */
-    .cart-summary { background: #fff; padding: 16px; border-top: 1px solid var(--border-color); margin-top: 20px; }
-    
-    /* Fix 4: Total Calculation Display (Total = amount * price) */
-    .cart-item-price-calc { font-size: 14px; color: #666; }
-    .cart-item-total { font-weight: bold; color: var(--text-dark); margin-top: 2px; }
-
-    /* Fix 8: Unauthenticated Empty State Blue Button */
-    .unauth-placeholder { text-align: center; padding: 24px; }
-    .btn-signin-blue {
-      background-color: var(--primary-blue);
-      color: #ffffff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
-      font-weight: 600;
-      margin-top: 12px;
-      cursor: pointer;
-    }
-
-    /* Fix 1: Contact Us & WhatsApp Placement */
-    .contact-us-section { background: #fff; padding: 20px; margin-top: 40px; border-top: 1px solid var(--border-color); }
-    .whatsapp-inline-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background-color: #25D366;
-      color: #fff;
-      padding: 10px 16px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 600;
-      margin-top: 10px;
-    }
-
-    /* Modal for Product Details */
-    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 300; }
-    .modal.active { display: flex; }
-    .modal-content { background: #fff; border-radius: 8px; width: 90%; max-width: 400px; padding: 16px; position: relative; }
+    .dark body { background-color: #0f172a; color: #f8fafc; }
+    .dark .bg-card { background-color: #1e293b; border-color: #334155; }
+    .dark .text-main { color: #f8fafc; }
+    .dark .text-sub { color: #94a3b8; }
+    .dark .bg-header { background-color: #1e293b; border-color: #334155; }
+    .bg-card { background-color: #ffffff; border-color: #e2e8f0; }
+    .text-main { color: #2c3e50; }
+    .text-sub { color: #7f8c8d; }
+    .bg-header { background-color: #ffffff; border-color: #e2e8f0; }
   </style>
 </head>
-<body>
+<body class="font-sans antialiased flex flex-col min-h-screen transition-colors duration-200">
 
-  <!-- Sticky Header -->
-  <header class="sticky-header">
-    <button id="toggle-btn" style="background:none; border:none; font-size:20px; cursor:pointer;">☰</button>
-    <h3>Store</h3>
-    <div class="header-right">
-      <!-- Fix 5 & 9: Instagram-Style SVG User Profile Icon -->
-      <div class="profile-avatar-icon" onclick="handleProfileClick()" title="Profile / Sign In">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-          <circle cx="12" cy="7" r="4"></circle>
+  <!-- Navigation Header -->
+  <header class="sticky top-0 z-40 bg-header border-b shadow-sm transition-colors duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+      
+      <!-- Mobile Hamburger Button -->
+      <button onclick="toggleMobileNav()" class="md:hidden p-2 text-main hover:text-seBlue focus:outline-none" title="Open Navigation Menu">
+        <i class="fa-solid fa-bars text-xl"></i>
+      </button>
+
+      <!-- Brand Logo -->
+      <button onclick="navigateTo('home')" class="flex items-center gap-2 shrink-0 focus:outline-none">
+        <svg class="w-8 h-7 sm:w-10 sm:h-8 text-seBlue" viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="15" x2="25" y2="15" stroke-width="3" />
+          <line x1="2" y1="25" x2="22" y2="25" stroke-width="3" />
+          <line x1="8" y1="35" x2="28" y2="35" stroke-width="3" />
+          <polyline points="25 10 32 10 42 40 82 40 90 18 35 18" />
+          <circle cx="48" cy="48" r="5" fill="currentColor" />
+          <circle cx="76" cy="48" r="5" fill="currentColor" />
         </svg>
+        <div class="flex items-baseline text-xl sm:text-2xl font-bold tracking-tight">
+          <span class="text-seBlue font-extrabold">Shopping</span>
+          <span class="text-seGray font-normal ml-0.5">Express</span>
+        </div>
+      </button>
+
+      <!-- Search Bar (Desktop) -->
+      <div class="hidden md:flex flex-1 max-w-xl relative">
+        <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Search products, cosmetics, electronics..." 
+               class="w-full pl-4 pr-10 py-2.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm text-main focus:outline-none focus:border-seBlue transition">
+        <button class="absolute right-3 top-1/2 -translate-y-1/2 text-seGray hover:text-seBlue">
+          <i class="fa-solid fa-magnifying-glass text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Desktop Header Actions -->
+      <div class="flex items-center gap-4 sm:gap-5">
+        <button onclick="handleAccountClick()" class="hidden sm:flex flex-col items-center text-sub hover:text-seBlue transition">
+          <i class="fa-regular fa-user text-lg"></i>
+          <span id="account-header-label" class="text-[10px] font-semibold mt-0.5">Account</span>
+        </button>
+        
+        <button onclick="toggleCartDrawer()" class="relative flex flex-col items-center text-sub hover:text-seBlue transition">
+          <i class="fa-solid fa-cart-shopping text-lg sm:text-xl"></i>
+          <span id="cart-badge" class="absolute -top-1.5 -right-2 bg-seBlue text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+          <span class="text-[10px] font-semibold mt-0.5 hidden sm:inline">Cart</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Search Bar Strip -->
+    <div class="px-4 pb-3 pt-1 md:hidden bg-header">
+      <div class="relative">
+        <input type="text" oninput="handleSearch(this.value)" placeholder="Search products..." 
+               class="w-full pl-4 pr-10 py-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-main focus:outline-none focus:border-seBlue">
+        <i class="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-xs text-sub"></i>
       </div>
     </div>
   </header>
 
-  <!-- Side Toggle Bar Menu -->
-  <nav class="toggle-menu" id="toggle-menu">
-    <button onclick="toggleMenu()" style="float:right; border:none; background:none; font-size:18px;">✕</button>
-    <h4>Navigation</h4>
-    <!-- Fix 7: Replacing '>' with '-' or bullet -->
-    <ul class="menu-category-list">
-      <li><a href="#catalog">- Catalog</a></li>
-      <li><a href="#wishlist">- Wishlist</a></li>
-      <li><a href="#history">- Order History</a></li>
-      <!-- Fix 1: Added 'Get in Touch' option in toggle bar -->
-      <li><a href="#contact" onclick="toggleMenu()">- Get In Touch</a></li>
-    </ul>
-    <!-- Fix 6: Red Log Out Button -->
-    <button class="btn-logout">Log Out</button>
-  </nav>
-
-  <!-- Product Catalog Grid -->
-  <main class="catalog-grid" id="catalog">
-    <div class="product-card">
-      <!-- Fix 9: Heart on Top-Left -->
-      <button class="card-heart-btn" onclick="handleHeartClick()">❤️</button>
-      <img src="https://via.placeholder.com/150" alt="Product" class="card-img" onclick="openProductModal('Item A', 25.00)">
-      <h4 style="margin-top:8px;">Item A</h4>
-      <p class="cart-item-price-calc">$25.00</p>
-      
-      <!-- Fix 2: Quantity buttons & prevents page scroll on click -->
-      <div class="qty-controls">
-        <button class="btn-qty" onclick="changeQuantity(event, -1)">-</button>
-        <span class="order-badge-blue" id="qty-count">2 in order</span>
-        <button class="btn-qty" onclick="changeQuantity(event, 1)">+</button>
-      </div>
-    </div>
-  </main>
-
-  <!-- Wishlist/History Section (Unauthenticated View) -->
-  <section id="wishlist" class="unauth-placeholder">
-    <p>Please sign in to view</p>
-    <!-- Fix 8: Blue Sign In Button -->
-    <button class="btn-signin-blue" onclick="handleProfileClick()">Sign In</button>
-  </section>
-
-  <!-- Shopping Cart Summary -->
-  <section class="cart-summary">
-    <h3>Shopping Cart</h3>
-    <div style="margin-top: 8px;">
-      <p>Amount: <span id="cart-amount">2</span></p>
-      <p class="cart-item-price-calc">Price: $25.00</p>
-      <!-- Fix 4: Total Display Below Price -->
-      <p class="cart-item-total">Total: $<span id="cart-total">50.00</span></p>
-    </div>
-  </section>
-
-  <!-- Online Payment Form -->
-  <section style="background:#fff; padding:16px; margin-top:16px;">
-    <h3>Online Payment</h3>
-    <form style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
-      <input type="text" placeholder="Cardholder Name" style="padding:8px; border:1px solid #ccc; border-radius:4px;">
-      <input type="text" placeholder="Card Number" style="padding:8px; border:1px solid #ccc; border-radius:4px;">
-      <!-- Fix 3: Phone Number Option in Online Payment -->
-      <input type="tel" placeholder="Phone Number for Checkout Verification" style="padding:8px; border:1px solid #ccc; border-radius:4px;">
-    </form>
-  </section>
-
-  <!-- Contact Us Section -->
-  <section id="contact" class="contact-us-section">
-    <h2>Get In Touch</h2>
-    <p style="margin-top:4px; color:#666;">Scrolled past the options? Reach out to us directly:</p>
-    <!-- Fix 1: WhatsApp Icon Placed beneath 'Get In Touch' -->
-    <a href="https://wa.me/1234567890" class="whatsapp-inline-btn" target="_blank">
-      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
-      Chat on WhatsApp
-    </a>
-  </section>
-
-  <!-- Modal for Product Details -->
-  <div class="modal" id="product-modal">
-    <div class="modal-content">
-      <button onclick="closeProductModal()" style="float:right; border:none; background:none;">✕</button>
-      <img src="https://via.placeholder.com/150" alt="Product" class="card-img" style="margin-top:10px;">
-      <h3 id="modal-title" style="margin-top:8px;">Item A</h3>
-      <p class="cart-item-price-calc" id="modal-price">$25.00</p>
-      
-      <!-- Fix 10: Standardized + - controls matching the catalog card -->
-      <div class="qty-controls">
-        <button class="btn-qty" onclick="changeQuantity(event, -1)">-</button>
-        <span class="order-badge-blue">2 in order</span>
-        <button class="btn-qty" onclick="changeQuantity(event, 1)">+</button>
-      </div>
-
-      <!-- Fix 10: Lorem Ipsum detail text beneath modal image/title -->
-      <p style="margin-top:12px; font-size:13px; color:#555;">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.
-      </p>
+  <!-- Theme Switcher Bar -->
+  <div class="bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700/60 py-2 px-4 transition-colors">
+    <div class="max-w-7xl mx-auto flex items-center justify-between text-xs">
+      <span class="text-sub flex items-center gap-2 font-medium">
+        <i class="fa-solid fa-palette text-seBlue"></i> Theme Preference:
+      </span>
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input type="checkbox" id="theme-toggle-switch" onchange="toggleDarkMode()" class="sr-only peer">
+        <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:after:border-slate-600 peer-checked:bg-seBlue"></div>
+        <span class="ml-2 text-main text-[11px] font-semibold" id="theme-switch-label">Light Mode</span>
+      </label>
     </div>
   </div>
 
+  <!-- Dynamic Main Content Area -->
+  <main id="app" class="flex-grow pb-20">
+    <!-- Rendered dynamically -->
+  </main>
+
+  <!-- Bottom Floating Checkout Trigger -->
+  <div id="floating-checkout-bar" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-30 w-11/12 max-w-md hidden">
+    <button onclick="initiateCheckout()" class="w-full bg-seBlue hover:bg-seBlue-dark text-white font-bold py-3 px-6 rounded-full shadow-2xl flex items-center justify-between transition transform active:scale-95">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <span id="floating-cart-count" class="text-xs bg-white/20 px-2 py-0.5 rounded-full">0 Items</span>
+      </div>
+      <span class="text-sm">Proceed to Checkout</span>
+      <span id="floating-cart-total" class="text-xs font-semibold">Rs. 0</span>
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 text-xs py-12 border-t border-slate-800 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-seBlue font-bold text-lg">Shopping</span>
+          <span class="text-slate-400 font-light text-lg">Express</span>
+        </div>
+        <p class="leading-relaxed">Your trusted store in Pakistan offering genuine products, competitive rates, and nationwide shipping.</p>
+      </div>
+      <div>
+        <h4 class="text-white font-semibold mb-3">Quick Navigation</h4>
+        <ul class="space-y-2">
+          <li><button onclick="navigateTo('home')" class="hover:text-seBlue transition">Home</button></li>
+          <li><button onclick="filterCategory('All')" class="hover:text-seBlue transition">All Categories</button></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-white font-semibold mb-3">Customer Service</h4>
+        <ul class="space-y-2">
+          <li><button onclick="navigateTo('account', 'order_history')" class="hover:text-seBlue transition">Track Order</button></li>
+          <li><a href="#" class="hover:text-seBlue transition">Return & Refund Policy</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-white font-semibold mb-3">Get in Touch</h4>
+        <p class="mb-2"><i class="fa-solid fa-location-dot mr-2 text-seBlue"></i> Pakistan</p>
+        <p class="mb-2"><i class="fa-solid fa-phone mr-2 text-seBlue"></i> +92 (300) 1234567</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Mobile Drawer -->
+  <div id="mobile-nav-drawer" class="fixed inset-0 z-50 invisible opacity-0 transition-all duration-300">
+    <div onclick="toggleMobileNav()" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
+    <div class="absolute left-0 top-0 bottom-0 w-4/5 max-w-xs bg-card shadow-2xl flex flex-col transition-colors duration-200">
+      <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-seBlue font-bold text-base">Shopping</span>
+          <span class="text-sub font-light text-base">Express</span>
+        </div>
+        <button onclick="toggleMobileNav()" class="text-sub hover:text-seBlue"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <div class="p-4 flex-grow overflow-y-auto space-y-6 text-sm">
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-sub mb-3">Navigation</h4>
+          <ul class="space-y-3 font-medium text-main">
+            <li><button onclick="navigateTo('home'); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-solid fa-house text-seBlue w-4"></i> Home Page</button></li>
+            <li><button onclick="handleAccountClick(); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-regular fa-user text-seBlue w-4"></i> Account Dashboard</button></li>
+            <li><button onclick="navigateTo('account', 'wishlist'); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-regular fa-heart text-seBlue w-4"></i> My Wishlist</button></li>
+            <li><button onclick="navigateTo('account', 'order_history'); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-solid fa-box-archive text-seBlue w-4"></i> Order History</button></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-sub mb-3">Categories</h4>
+          <ul id="mobile-categories-list" class="space-y-2 text-main"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Drawer -->
+  <div id="cart-drawer" class="fixed inset-0 z-50 invisible opacity-0 transition-all duration-300">
+    <div onclick="toggleCartDrawer()" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
+    <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-card shadow-2xl flex flex-col transition-colors duration-200">
+      <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+        <h3 class="font-bold text-main">Your Shopping Cart</h3>
+        <button onclick="toggleCartDrawer()" class="text-sub hover:text-seBlue"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <div id="cart-items" class="p-4 flex-grow overflow-y-auto space-y-4"></div>
+      <div class="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+        <div class="flex justify-between font-bold text-main text-sm mb-4">
+          <span>Total Amount:</span>
+          <span id="cart-total" class="text-seBlue">Rs. 0</span>
+        </div>
+        <button onclick="initiateCheckout(); toggleCartDrawer();" class="w-full bg-seBlue hover:bg-seBlue-dark text-white py-3 rounded-lg font-semibold text-sm transition shadow-md">
+          Proceed to Checkout
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
+  <div id="account-modal" class="fixed inset-0 z-50 invisible opacity-0 transition-all duration-300 flex items-center justify-center p-4">
+    <div onclick="toggleAccountModal()" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
+    <div class="relative bg-card rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 z-10">
+      <button onclick="toggleAccountModal()" class="absolute top-4 right-4 text-sub hover:text-seBlue"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div id="auth-form-container">
+        <h3 class="text-lg font-bold text-main mb-1">Customer Login</h3>
+        <p class="text-xs text-sub mb-4">Please sign in or register to continue</p>
+        
+        <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-sub mb-1">Full Name</label>
+            <input type="text" id="auth-name" placeholder="John Doe" required class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2.5 rounded-lg text-sm focus:outline-none focus:border-seBlue">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-sub mb-1">Email / Mobile Number</label>
+            <input type="text" id="auth-email" required class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2.5 rounded-lg text-sm focus:outline-none focus:border-seBlue">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-sub mb-1">Delivery Address</label>
+            <input type="text" id="auth-address" placeholder="House #, Street, City" required class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2.5 rounded-lg text-sm focus:outline-none focus:border-seBlue">
+          </div>
+          <button type="submit" class="w-full bg-seBlue text-white font-bold py-2.5 rounded-lg text-sm hover:bg-seBlue-dark transition">Sign In / Register</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- WhatsApp Floating Button -->
+  <a href="https://wa.me/923001234567" target="_blank" class="fixed bottom-6 right-6 bg-emerald-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-lg hover:bg-emerald-600 transition z-30">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+
+  <!-- Frontend Logic Script -->
   <script>
-    let currentQty = 2;
-    const unitPrice = 25.00;
+    const categories = ['All', 'Fitness', 'Skincare', 'Electronics'];
+    const products = [
+      { id: 1, name: "Portable Mini Rechargeable Massage Gun", category: "Fitness", price: 2150, originalPrice: 2800, desc: "High torque muscle recovery massage gun with interchangeable heads.", image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500&auto=format&fit=crop&q=60" },
+      { id: 2, name: "Anua Peach 70% Niacinamide Serum 30ml", category: "Skincare", price: 3950, originalPrice: 4200, desc: "Brightening serum designed to refine skin tone and enhance glow.", image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500&auto=format&fit=crop&q=60" },
+      { id: 3, name: "Adjustable Hand Gripper 5-60kg", category: "Fitness", price: 490, originalPrice: 750, desc: "Durable forearm and grip strength trainer with counter.", image: "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=500&auto=format&fit=crop&q=60" },
+      { id: 4, name: "Dr Rashel Whitening Sunscreen SPF 50", category: "Skincare", price: 1099, originalPrice: 1250, desc: "Non-greasy sunblock providing broad-spectrum UV protection.", image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=500&auto=format&fit=crop&q=60" },
+      { id: 5, name: "Wireless Bluetooth Earbuds Pro", category: "Electronics", price: 2499, originalPrice: 3500, desc: "Noise cancelling wireless earbuds with deep bass.", image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&auto=format&fit=crop&q=60" },
+      { id: 6, name: "Smart Fitness Tracker Watch", category: "Electronics", price: 3200, originalPrice: 4500, desc: "Track heart rate, steps, and sleep patterns on the go.", image: "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=500&auto=format&fit=crop&q=60" }
+    ];
 
-    // Toggle Bar Control
-    document.getElementById('toggle-btn').addEventListener('click', toggleMenu);
-    function toggleMenu() {
-      const menu = document.getElementById('toggle-menu');
-      menu.classList.toggle('active');
+    let cart = JSON.parse(localStorage.getItem('se_cart')) || [];
+    let wishlist = JSON.parse(localStorage.getItem('se_wishlist')) || [];
+    let placedOrders = JSON.parse(localStorage.getItem('se_orders')) || [];
+    let currentUser = JSON.parse(localStorage.getItem('se_user')) || null;
+    let activeCategory = 'All';
+    let searchQuery = '';
+    let pendingCheckout = false;
+    let activeAccountTab = 'personal_details';
+    let isEditingProfile = false;
+
+    function toggleDarkMode() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      const switchEl = document.getElementById('theme-toggle-switch');
+      const labelEl = document.getElementById('theme-switch-label');
+      if (switchEl) switchEl.checked = isDark;
+      if (labelEl) labelEl.innerText = isDark ? 'Dark Mode' : 'Light Mode';
     }
 
-    // Fix 2: Prevent default scrolling behavior on add/subtract
-    function changeQuantity(event, amount) {
-      event.preventDefault(); // Prevents jump to top of screen
-      currentQty = Math.max(1, currentQty + amount);
-      
-      // Update UI displays
-      document.querySelectorAll('#qty-count, .modal .order-badge-blue').forEach(el => {
-        el.textContent = `${currentQty} in order`;
+    function renderMobileCategories() {
+      const container = document.getElementById('mobile-categories-list');
+      if (!container) return;
+      container.innerHTML = categories.map(cat => `
+        <li>
+          <button onclick="filterCategory('${cat}'); toggleMobileNav();" class="w-full text-left py-1 text-xs hover:text-seBlue flex items-center">
+            <i class="fa-solid fa-chevron-right text-[10px] text-sub mr-2"></i> ${cat}
+          </button>
+        </li>
+      `).join('');
+    }
+
+    function saveCart() {
+      localStorage.setItem('se_cart', JSON.stringify(cart));
+      updateCartUI();
+    }
+
+    function saveWishlist() {
+      localStorage.setItem('se_wishlist', JSON.stringify(wishlist));
+    }
+
+    function saveOrders() {
+      localStorage.setItem('se_orders', JSON.stringify(placedOrders));
+    }
+
+    function navigateTo(view, param = null) {
+      const app = document.getElementById('app');
+      window.scrollTo(0, 0);
+
+      if (view === 'home') {
+        app.innerHTML = renderHome();
+      } else if (view === 'product') {
+        app.innerHTML = renderProductDetails(param);
+      } else if (view === 'checkout') {
+        app.innerHTML = renderCheckout();
+      } else if (view === 'account') {
+        if (param) activeAccountTab = param;
+        app.innerHTML = renderAccountView();
+      }
+    }
+
+    function renderHome() {
+      const filtered = products.filter(p => {
+        const matchesCategory = activeCategory === 'All' || p.category === activeCategory;
+        const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesCategory && matchesSearch;
       });
+
+      return `
+        <!-- Category Selector -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <h2 class="text-base sm:text-lg font-bold text-main mb-3">Browse Categories</h2>
+          <div class="flex flex-wrap gap-2 sm:gap-3">
+            ${categories.map(cat => `
+              <button onclick="filterCategory('${cat}')" class="px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs font-semibold border transition ${activeCategory === cat ? 'bg-seBlue text-white border-seBlue shadow-sm' : 'bg-card text-sub border-slate-200 dark:border-slate-700 hover:border-seBlue'}">
+                ${cat}
+              </button>
+            `).join('')}
+          </div>
+        </section>
+
+        <!-- Product Grid -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            ${filtered.length ? filtered.map(p => renderProductCard(p)).join('') : '<p class="col-span-full text-center text-sub py-12">No products match your search.</p>'}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderProductCard(p) {
+      const cartItem = cart.find(c => c.id === p.id);
+      const qty = cartItem ? cartItem.qty : 0;
+      const isWishlisted = wishlist.includes(p.id);
+
+      return `
+        <div class="bg-card rounded-xl border overflow-hidden hover:shadow-lg transition flex flex-col group">
+          <div class="bg-slate-100 dark:bg-slate-800 aspect-square overflow-hidden relative">
+            <img onclick="navigateTo('product', ${p.id})" src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300 cursor-pointer">
+            <button onclick="toggleWishlist(${p.id})" class="absolute top-2 right-2 bg-white/90 dark:bg-slate-900/90 p-2 rounded-full text-xs text-sub hover:text-rose-500 transition shadow-sm">
+              <i class="${isWishlisted ? 'fa-solid fa-heart text-rose-500' : 'fa-regular fa-heart'}"></i>
+            </button>
+          </div>
+          <div class="p-4 flex flex-col flex-grow">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-seBlue">${p.category}</span>
+            <h3 onclick="navigateTo('product', ${p.id})" class="cursor-pointer font-semibold text-main text-sm mt-1 line-clamp-2 hover:text-seBlue transition">${p.name}</h3>
+            <div class="mt-auto pt-4 flex items-center justify-between">
+              <div>
+                <span class="text-base font-extrabold text-main">Rs. ${p.price.toLocaleString()}</span>
+                <span class="text-xs text-sub line-through block">Rs. ${p.originalPrice.toLocaleString()}</span>
+              </div>
+              
+              <!-- Quantity Stepper Button (+ / -) -->
+              <div class="flex items-center border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 rounded-lg overflow-hidden shadow-sm">
+                <button onclick="updateCartQty(${p.id}, -1)" class="w-8 h-8 font-bold text-main hover:bg-seBlue hover:text-white transition flex items-center justify-center text-sm ${qty === 0 ? 'opacity-40 cursor-not-allowed' : ''}" ${qty === 0 ? 'disabled' : ''}>-</button>
+                <span class="px-2.5 text-xs font-bold text-main min-w-[20px] text-center">${qty}</span>
+                <button onclick="addToCart(${p.id})" class="w-8 h-8 font-bold text-main hover:bg-seBlue hover:text-white transition flex items-center justify-center text-sm">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderProductDetails(id) {
+      const p = products.find(prod => prod.id === id);
+      const cartItem = cart.find(c => c.id === p.id);
+      const qty = cartItem ? cartItem.qty : 0;
+
+      return `
+        <section class="max-w-5xl mx-auto px-4 py-8 sm:py-10">
+          <button onclick="navigateTo('home')" class="text-sub hover:text-seBlue text-xs font-bold mb-6 flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Back to Catalog</button>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 bg-card p-6 sm:p-8 rounded-2xl border shadow-sm">
+            <div class="aspect-square rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800">
+              <img src="${p.image}" class="w-full h-full object-cover">
+            </div>
+            <div class="flex flex-col justify-center">
+              <span class="text-xs font-bold uppercase tracking-wider text-seBlue">${p.category}</span>
+              <h1 class="text-xl sm:text-2xl font-bold text-main mt-2">${p.name}</h1>
+              <p class="text-sub text-xs sm:text-sm mt-4 leading-relaxed">${p.desc}</p>
+              <div class="mt-6 flex items-baseline gap-3">
+                <span class="text-2xl sm:text-3xl font-black text-main">Rs. ${p.price.toLocaleString()}</span>
+                <span class="text-xs sm:text-sm text-sub line-through">Rs. ${p.originalPrice.toLocaleString()}</span>
+              </div>
+              
+              <div class="mt-6 flex items-center gap-4">
+                <div class="flex items-center border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-xl overflow-hidden">
+                  <button onclick="updateCartQty(${p.id}, -1)" class="w-10 h-10 font-bold text-main hover:bg-seBlue hover:text-white transition flex items-center justify-center text-base ${qty === 0 ? 'opacity-40 cursor-not-allowed' : ''}" ${qty === 0 ? 'disabled' : ''}>-</button>
+                  <span class="px-4 text-sm font-bold text-main">${qty}</span>
+                  <button onclick="addToCart(${p.id})" class="w-10 h-10 font-bold text-main hover:bg-seBlue hover:text-white transition flex items-center justify-center text-base">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderCheckout() {
+      return `
+        <section class="max-w-2xl mx-auto px-4 py-8 sm:py-10">
+          <div class="bg-card p-6 sm:p-8 rounded-2xl border shadow-sm">
+            <h2 class="text-xl font-bold text-main mb-6">Complete Your Order</h2>
+            <form onsubmit="handleOrderSubmit(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-sub mb-1">Full Name</label>
+                <input type="text" value="${currentUser ? currentUser.name : ''}" required class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2.5 rounded-lg text-sm focus:outline-none focus:border-seBlue">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-sub mb-1">Shipping Address</label>
+                <textarea required rows="3" class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2.5 rounded-lg text-sm focus:outline-none focus:border-seBlue" placeholder="House / Flat #, Street, City">${currentUser ? currentUser.address : ''}</textarea>
+              </div>
+
+              <div class="pt-2">
+                <label class="block text-xs font-semibold text-sub mb-2">Payment Option</label>
+                <div class="grid grid-cols-2 gap-3">
+                  <label class="border border-seBlue bg-seBlue-light/20 p-3 rounded-xl flex items-center gap-3 cursor-pointer">
+                    <input type="radio" name="payment" value="cod" checked class="accent-seBlue">
+                    <div>
+                      <span class="block text-xs font-bold text-main">Cash on Delivery</span>
+                      <span class="text-[10px] text-sub">Pay at doorstep</span>
+                    </div>
+                  </label>
+                  <label class="border border-slate-200 dark:border-slate-700 p-3 rounded-xl flex items-center gap-3 cursor-pointer hover:border-seBlue">
+                    <input type="radio" name="payment" value="online" class="accent-seBlue">
+                    <div>
+                      <span class="block text-xs font-bold text-main">Online Payment</span>
+                      <span class="text-[10px] text-sub">Card / Mobile Wallet</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 rounded-xl transition shadow-md mt-6 text-sm">
+                Confirm & Place Order
+              </button>
+            </form>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderAccountView() {
+      if (!currentUser) {
+        return `<div class="max-w-md mx-auto py-16 text-center text-sub">Please sign in to view your account.</div>`;
+      }
+
+      return `
+        <section class="max-w-6xl mx-auto px-4 py-8">
+          <!-- User Profile Banner (Header Section) -->
+          <div class="bg-card p-6 rounded-2xl border shadow-sm mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <!-- Default Avatar Image -->
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Profile Picture" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-seBlue shadow">
+              <div>
+                <h2 class="text-xl font-bold text-main flex items-center gap-2">
+                  ${currentUser.name}
+                </h2>
+                <p class="text-xs text-sub mt-1"><i class="fa-solid fa-envelope mr-1 text-seBlue"></i> ${currentUser.email}</p>
+                <p class="text-xs text-sub mt-0.5"><i class="fa-solid fa-location-dot mr-1 text-seBlue"></i> ${currentUser.address}</p>
+              </div>
+            </div>
+            <button onclick="toggleProfileEdit()" class="bg-slate-100 dark:bg-slate-800 text-main hover:text-seBlue text-xs font-semibold px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 transition">
+              <i class="fa-solid fa-pen-to-square mr-1"></i> Edit Profile
+            </button>
+          </div>
+
+          <!-- Edit Profile Form Dropdown (Conditional) -->
+          ${isEditingProfile ? `
+            <div class="bg-card p-6 rounded-2xl border shadow-sm mb-6">
+              <h3 class="text-sm font-bold text-main mb-3">Update Profile Information</h3>
+              <form onsubmit="saveProfileEdits(event)" class="space-y-3">
+                <div>
+                  <label class="block text-xs text-sub mb-1">Full Name</label>
+                  <input type="text" id="edit-name" value="${currentUser.name}" required class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2 rounded-lg text-xs">
+                </div>
+                <div>
+                  <label class="block text-xs text-sub mb-1">Address</label>
+                  <input type="text" id="edit-address" value="${currentUser.address}" required class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2 rounded-lg text-xs">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                  <button type="button" onclick="toggleProfileEdit()" class="text-xs text-sub px-3 py-1.5">Cancel</button>
+                  <button type="submit" class="bg-seBlue text-white text-xs font-semibold px-4 py-1.5 rounded-lg">Save Changes</button>
+                </div>
+              </form>
+            </div>
+          ` : ''}
+
+          <!-- Sidebar & Dynamic Content Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            
+            <!-- Left Side Account Navigation Block -->
+            <div class="md:col-span-1 flex flex-col justify-between">
+              <div class="bg-card rounded-2xl border shadow-sm p-4">
+                <h3 class="text-lg font-bold text-main px-3 pb-3 mb-2 border-b border-slate-100 dark:border-slate-800">My Account</h3>
+                <nav class="space-y-1">
+                  <button onclick="switchAccountTab('personal_details')" class="w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold transition ${activeAccountTab === 'personal_details' ? 'bg-seBlue text-white' : 'text-sub hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-main'}">
+                    Personal Details
+                  </button>
+                  <button onclick="switchAccountTab('order_history')" class="w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold transition ${activeAccountTab === 'order_history' ? 'bg-seBlue text-white' : 'text-sub hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-main'}">
+                    Order History
+                  </button>
+                  <button onclick="switchAccountTab('wishlist')" class="w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold transition ${activeAccountTab === 'wishlist' ? 'bg-seBlue text-white' : 'text-sub hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-main'}">
+                    My Wishlist
+                  </button>
+                  <button onclick="switchAccountTab('change_password')" class="w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold transition ${activeAccountTab === 'change_password' ? 'bg-seBlue text-white' : 'text-sub hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-main'}">
+                    Change Password
+                  </button>
+                  <button onclick="switchAccountTab('newsletter')" class="w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold transition ${activeAccountTab === 'newsletter' ? 'bg-seBlue text-white' : 'text-sub hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-main'}">
+                    Newsletter
+                  </button>
+                </nav>
+              </div>
+
+              <!-- Log Out Button (Positioned at bottom right under the block) -->
+              <div class="mt-4 flex justify-end">
+                <button onclick="logout()" class="text-rose-600 hover:text-rose-700 font-bold text-xs flex items-center gap-1.5 px-3 py-2 transition">
+                  <i class="fa-solid fa-right-from-bracket"></i> Log Out
+                </button>
+              </div>
+            </div>
+
+            <!-- Right Side Selected Content View -->
+            <div class="md:col-span-3 bg-card rounded-2xl border shadow-sm p-6">
+              ${renderAccountTabContent()}
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderAccountTabContent() {
+      if (activeAccountTab === 'personal_details') {
+        return `
+          <h3 class="text-base font-bold text-main mb-4 border-b pb-2">Personal Details</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div>
+              <span class="text-sub block font-semibold mb-0.5">Full Name</span>
+              <p class="text-main font-bold">${currentUser.name}</p>
+            </div>
+            <div>
+              <span class="text-sub block font-semibold mb-0.5">Email Address</span>
+              <p class="text-main font-bold">${currentUser.email}</p>
+            </div>
+            <div class="sm:col-span-2">
+              <span class="text-sub block font-semibold mb-0.5">Shipping Address</span>
+              <p class="text-main font-bold">${currentUser.address}</p>
+            </div>
+          </div>
+        `;
+      } else if (activeAccountTab === 'order_history') {
+        return `
+          <h3 class="text-base font-bold text-main mb-4 border-b pb-2">Order History & Live Tracking</h3>
+          ${placedOrders.length ? `
+            <div class="space-y-4">
+              ${placedOrders.map(order => `
+                <div class="border border-slate-200 dark:border-slate-700 p-4 rounded-xl">
+                  <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-bold text-seBlue">Order #${order.id}</span>
+                    <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full font-bold">On the Way</span>
+                  </div>
+                  <p class="text-xs text-sub mb-2">Date: ${order.date}</p>
+                  <p class="text-xs text-main font-bold mb-3">Total Amount: Rs. ${order.total.toLocaleString()}</p>
+                  <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5">
+                    <div class="bg-seBlue h-1.5 rounded-full w-2/3"></div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          ` : '<p class="text-sub text-xs py-8 text-center">No orders placed yet.</p>'}
+        `;
+      } else if (activeAccountTab === 'wishlist') {
+        const items = products.filter(p => wishlist.includes(p.id));
+        return `
+          <h3 class="text-base font-bold text-main mb-4 border-b pb-2">My Wishlist</h3>
+          ${items.length ? `
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              ${items.map(p => renderProductCard(p)).join('')}
+            </div>
+          ` : '<p class="text-sub text-xs py-8 text-center">Your wishlist is empty.</p>'}
+        `;
+      } else if (activeAccountTab === 'change_password') {
+        return `
+          <h3 class="text-base font-bold text-main mb-4 border-b pb-2">Change Password</h3>
+          <form class="space-y-3 max-w-sm" onsubmit="event.preventDefault(); alert('Password updated successfully!');">
+            <div>
+              <label class="block text-xs text-sub mb-1">Current Password</label>
+              <input type="password" required class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2 rounded-lg text-xs">
+            </div>
+            <div>
+              <label class="block text-xs text-sub mb-1">New Password</label>
+              <input type="password" required class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2 rounded-lg text-xs">
+            </div>
+            <button type="submit" class="bg-seBlue text-white text-xs font-semibold px-4 py-2 rounded-lg">Update Password</button>
+          </form>
+        `;
+      } else if (activeAccountTab === 'newsletter') {
+        return `
+          <h3 class="text-base font-bold text-main mb-4 border-b pb-2">Newsletter Subscriptions</h3>
+          <p class="text-xs text-sub mb-4">Manage your email notifications and promotional offer updates.</p>
+          <label class="flex items-center gap-2 cursor-pointer text-xs text-main">
+            <input type="checkbox" checked class="accent-seBlue"> Subscribe to promotional updates and flash sale alerts.
+          </label>
+        `;
+      }
+    }
+
+    function switchAccountTab(tab) {
+      activeAccountTab = tab;
+      navigateTo('account');
+    }
+
+    function toggleProfileEdit() {
+      isEditingProfile = !isEditingProfile;
+      navigateTo('account');
+    }
+
+    function saveProfileEdits(e) {
+      e.preventDefault();
+      currentUser.name = document.getElementById('edit-name').value;
+      currentUser.address = document.getElementById('edit-address').value;
+      localStorage.setItem('se_user', JSON.stringify(currentUser));
+      isEditingProfile = false;
+      navigateTo('account');
+    }
+
+    function filterCategory(cat) {
+      activeCategory = cat;
+      navigateTo('home');
+    }
+
+    function handleSearch(val) {
+      searchQuery = val;
+      navigateTo('home');
+    }
+
+    function addToCart(id) {
+      const p = products.find(prod => prod.id === id);
+      const item = cart.find(c => c.id === id);
+      if (item) {
+        item.qty++;
+      } else {
+        cart.push({ ...p, qty: 1 });
+      }
+      saveCart();
+      if (document.getElementById('app').innerHTML.includes('Browse Categories')) {
+        navigateTo('home');
+      }
+    }
+
+    function updateCartQty(id, delta) {
+      const item = cart.find(c => c.id === id);
+      if (item) {
+        item.qty += delta;
+        if (item.qty <= 0) {
+          cart = cart.filter(c => c.id !== id);
+        }
+      }
+      saveCart();
+      if (document.getElementById('app').innerHTML.includes('Browse Categories')) {
+        navigateTo('home');
+      }
+    }
+
+    function removeFromCart(id) {
+      cart = cart.filter(c => c.id !== id);
+      saveCart();
+    }
+
+    function toggleWishlist(id) {
+      if (wishlist.includes(id)) {
+        wishlist = wishlist.filter(wId => wId !== id);
+      } else {
+        wishlist.push(id);
+      }
+      saveWishlist();
+      navigateTo('home');
+    }
+
+    function updateCartUI() {
+      const totalCount = cart.reduce((acc, item) => acc + item.qty, 0);
+      const totalAmount = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
       
-      document.getElementById('cart-amount').textContent = currentQty;
+      document.getElementById('cart-badge').innerText = totalCount;
+      const cartContainer = document.getElementById('cart-items');
       
-      // Fix 4: Total calculation (Total = Amount * Price)
-      const total = (currentQty * unitPrice).toFixed(2);
-      document.getElementById('cart-total').textContent = total;
+      if (cart.length === 0) {
+        cartContainer.innerHTML = `<p class="text-sub text-xs text-center py-8">Your cart is currently empty.</p>`;
+      } else {
+        cartContainer.innerHTML = cart.map(item => `
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+            <div class="flex items-center gap-3">
+              <img src="${item.image}" class="w-12 h-12 rounded object-cover">
+              <div>
+                <h4 class="text-xs font-semibold text-main line-clamp-1">${item.name}</h4>
+                <span class="text-xs text-sub">Rs. ${item.price.toLocaleString()}</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="flex items-center border border-slate-200 dark:border-slate-700 rounded-lg">
+                <button onclick="updateCartQty(${item.id}, -1)" class="px-2 py-0.5 text-sub hover:text-seBlue text-xs">-</button>
+                <span class="px-2 text-xs font-bold text-main">${item.qty}</span>
+                <button onclick="addToCart(${item.id})" class="px-2 py-0.5 text-sub hover:text-seBlue text-xs">+</button>
+              </div>
+              <button onclick="removeFromCart(${item.id})" class="text-rose-500 hover:text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('cart-total').innerText = `Rs. ${totalAmount.toLocaleString()}`;
+
+      const floatBar = document.getElementById('floating-checkout-bar');
+      if (totalCount > 0) {
+        floatBar.classList.remove('hidden');
+        document.getElementById('floating-cart-count').innerText = `${totalCount} Item${totalCount > 1 ? 's' : ''}`;
+        document.getElementById('floating-cart-total').innerText = `Rs. ${totalAmount.toLocaleString()}`;
+      } else {
+        floatBar.classList.add('hidden');
+      }
     }
 
-    // Fix 9: Heart click pop-up alert prompt
-    function handleHeartClick() {
-      alert("Please sign in to add items to your wishlist.");
+    function toggleCartDrawer() {
+      const drawer = document.getElementById('cart-drawer');
+      drawer.classList.toggle('invisible');
+      drawer.classList.toggle('opacity-0');
     }
 
-    function handleProfileClick() {
-      alert("Redirecting to Sign In page...");
+    function toggleMobileNav() {
+      const drawer = document.getElementById('mobile-nav-drawer');
+      drawer.classList.toggle('invisible');
+      drawer.classList.toggle('opacity-0');
     }
 
-    // Fix 10: Product Modal controls
-    function openProductModal(title, price) {
-      document.getElementById('modal-title').textContent = title;
-      document.getElementById('modal-price').textContent = `$${price.toFixed(2)}`;
-      document.getElementById('product-modal').classList.add('active');
+    function toggleAccountModal() {
+      const modal = document.getElementById('account-modal');
+      modal.classList.toggle('invisible');
+      modal.classList.toggle('opacity-0');
     }
 
-    function closeProductModal() {
-      document.getElementById('product-modal').classList.remove('active');
+    function handleAccountClick() {
+      if (currentUser) {
+        navigateTo('account');
+      } else {
+        toggleAccountModal();
+      }
     }
+
+    function initiateCheckout() {
+      if (!currentUser) {
+        pendingCheckout = true;
+        toggleAccountModal();
+      } else {
+        navigateTo('checkout');
+      }
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('auth-name').value;
+      const email = document.getElementById('auth-email').value;
+      const address = document.getElementById('auth-address').value;
+      
+      currentUser = { name, email, address };
+      localStorage.setItem('se_user', JSON.stringify(currentUser));
+      updateAuthUI();
+      toggleAccountModal();
+
+      if (pendingCheckout) {
+        pendingCheckout = false;
+        navigateTo('checkout');
+      } else {
+        navigateTo('account');
+      }
+    }
+
+    function logout() {
+      currentUser = null;
+      localStorage.removeItem('se_user');
+      updateAuthUI();
+      navigateTo('home');
+    }
+
+    function updateAuthUI() {
+      const label = document.getElementById('account-header-label');
+      if (label) {
+        label.innerText = currentUser ? 'Profile' : 'Account';
+      }
+    }
+
+    function handleOrderSubmit(e) {
+      e.preventDefault();
+      const totalAmount = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+      const newOrder = {
+        id: Math.floor(100000 + Math.random() * 900000),
+        date: new Date().toLocaleDateString(),
+        total: totalAmount
+      };
+      
+      placedOrders.unshift(newOrder);
+      saveOrders();
+
+      cart = [];
+      saveCart();
+      alert("Order placed successfully! Track your shipment inside your Order History.");
+      navigateTo('account', 'order_history');
+    }
+
+    // App Initialization
+    renderMobileCategories();
+    navigateTo('home');
+    updateCartUI();
+    updateAuthUI();
   </script>
 </body>
 </html>
