@@ -47,8 +47,8 @@
   <header class="sticky top-0 z-40 bg-header border-b shadow-sm transition-colors duration-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
       
-      <!-- Mobile Hamburger Button -->
-      <button onclick="toggleMobileNav()" class="md:hidden p-2 text-main hover:text-seBlue focus:outline-none" title="Open Navigation Menu">
+      <!-- Hamburger Button (Now visible on Desktop too) -->
+      <button onclick="toggleMobileNav()" class="p-2 text-main hover:text-seBlue focus:outline-none" title="Open Navigation Menu">
         <i class="fa-solid fa-bars text-xl"></i>
       </button>
 
@@ -79,7 +79,13 @@
 
       <!-- Header Actions (Visible on Mobile & Desktop) -->
       <div class="flex items-center gap-4 sm:gap-5">
-        <!-- Account Icon (Updated: Visible on Mobile too) -->
+        <!-- Direct Desktop Theme Toggle Button -->
+        <button onclick="toggleDarkMode()" class="hidden md:flex flex-col items-center text-sub hover:text-seBlue transition" title="Toggle Dark/Light Mode">
+          <i class="fa-solid fa-circle-half-stroke text-lg sm:text-xl"></i>
+          <span class="text-[10px] font-semibold mt-0.5">Theme</span>
+        </button>
+
+        <!-- Account Icon -->
         <button onclick="handleAccountClick('personal_details')" class="flex flex-col items-center text-sub hover:text-seBlue transition">
           <i class="fa-regular fa-user text-lg sm:text-xl"></i>
           <span id="account-header-label" class="text-[10px] font-semibold mt-0.5">Account</span>
@@ -103,7 +109,7 @@
     </div>
   </header>
 
-  <!-- Dynamic Main Content Area (Updated: pb-28 / pb-36 padding to ensure WhatsApp button isn't covered by bottom sticky bar) -->
+  <!-- Dynamic Main Content Area -->
   <main id="app" class="flex-grow pb-28 sm:pb-36">
     <!-- Rendered dynamically -->
   </main>
@@ -155,7 +161,7 @@
     </div>
   </footer>
 
-  <!-- Mobile Drawer Sidebar -->
+  <!-- Universal Drawer Sidebar (Desktop & Mobile) -->
   <div id="mobile-nav-drawer" class="fixed inset-0 z-50 invisible opacity-0 transition-all duration-300">
     <div onclick="toggleMobileNav()" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
     <div class="absolute left-0 top-0 bottom-0 w-4/5 max-w-xs bg-card shadow-2xl flex flex-col transition-colors duration-200">
@@ -189,7 +195,7 @@
             <ul id="mobile-categories-list" class="space-y-2 text-main"></ul>
           </div>
 
-          <!-- Light/Dark Mode Switcher inside Mobile Sidebar -->
+          <!-- Light/Dark Mode Switcher -->
           <div class="pt-2 border-t border-slate-200 dark:border-slate-700">
             <h4 class="text-xs font-bold uppercase tracking-wider text-sub mb-3">Appearance</h4>
             <div class="flex items-center justify-between bg-slate-100 dark:bg-slate-800 p-2.5 rounded-xl">
@@ -204,7 +210,7 @@
           </div>
         </div>
 
-        <!-- Get In Touch moved to bottom of Mobile Sidebar -->
+        <!-- Get In Touch at bottom of Sidebar -->
         <div class="pt-4 border-t border-slate-200 dark:border-slate-700 mt-auto">
           <button onclick="scrollToGetInTouch(); toggleMobileNav();" class="flex items-center gap-3 w-full text-left font-semibold text-seBlue hover:text-seBlue-dark">
             <i class="fa-solid fa-envelope w-4"></i> Get in Touch
@@ -529,7 +535,6 @@
           <!-- User Profile Banner (Header Section) -->
           <div class="bg-card p-6 rounded-2xl border shadow-sm mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-              <!-- Simple Clean Person Avatar Icon (Removed Instagram and purple ring) -->
               <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-slate-100 dark:bg-slate-800 border-2 border-seBlue flex items-center justify-center text-seBlue shadow-sm">
                 <i class="fa-regular fa-user text-2xl sm:text-3xl"></i>
               </div>
@@ -546,7 +551,7 @@
             </button>
           </div>
 
-          <!-- Edit Profile Form Dropdown (Conditional) -->
+          <!-- Edit Profile Form Dropdown -->
           ${isEditingProfile ? `
             <div class="bg-card p-6 rounded-2xl border shadow-sm mb-6">
               <h3 class="text-sm font-bold text-main mb-3">Update Profile Information</h3>
