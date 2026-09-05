@@ -80,7 +80,7 @@
       <!-- Desktop Header Actions -->
       <div class="flex items-center gap-4 sm:gap-5">
         <button onclick="handleAccountClick()" class="hidden sm:flex flex-col items-center text-sub hover:text-seBlue transition">
-          <i class="fa-regular fa-user text-lg"></i>
+          <i class="fa-brands fa-instagram text-lg"></i>
           <span id="account-header-label" class="text-[10px] font-semibold mt-0.5">Account</span>
         </button>
         
@@ -160,7 +160,11 @@
       <div>
         <h4 class="text-white font-semibold mb-3">Get in Touch</h4>
         <p class="mb-2"><i class="fa-solid fa-location-dot mr-2 text-seBlue"></i> Pakistan</p>
-        <p class="mb-2"><i class="fa-solid fa-phone mr-2 text-seBlue"></i> +92 (300) 1234567</p>
+        <p class="mb-3"><i class="fa-solid fa-phone mr-2 text-seBlue"></i> +92 (300) 1234567</p>
+        <!-- WhatsApp Icon moved here -->
+        <a href="https://wa.me/923001234567" target="_blank" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-3 py-1.5 rounded-lg text-xs transition shadow-sm">
+          <i class="fa-brands fa-whatsapp text-sm"></i> Chat on WhatsApp
+        </a>
       </div>
     </div>
   </footer>
@@ -184,6 +188,7 @@
             <li><button onclick="handleAccountClick(); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-regular fa-user text-seBlue w-4"></i> Account Dashboard</button></li>
             <li><button onclick="navigateTo('account', 'wishlist'); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-regular fa-heart text-seBlue w-4"></i> My Wishlist</button></li>
             <li><button onclick="navigateTo('account', 'order_history'); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-solid fa-box-archive text-seBlue w-4"></i> Order History</button></li>
+            <li><button onclick="scrollToGetInTouch(); toggleMobileNav();" class="flex items-center gap-3 w-full text-left hover:text-seBlue"><i class="fa-solid fa-envelope text-seBlue w-4"></i> Get in Touch</button></li>
           </ul>
         </div>
         <div>
@@ -244,11 +249,6 @@
     </div>
   </div>
 
-  <!-- WhatsApp Floating Button -->
-  <a href="https://wa.me/923001234567" target="_blank" class="fixed bottom-6 right-6 bg-emerald-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-lg hover:bg-emerald-600 transition z-30">
-    <i class="fa-brands fa-whatsapp"></i>
-  </a>
-
   <!-- Frontend Logic Script -->
   <script>
     const categories = ['All', 'Fitness', 'Skincare', 'Electronics'];
@@ -279,13 +279,17 @@
       if (labelEl) labelEl.innerText = isDark ? 'Dark Mode' : 'Light Mode';
     }
 
+    function scrollToGetInTouch() {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
     function renderMobileCategories() {
       const container = document.getElementById('mobile-categories-list');
       if (!container) return;
       container.innerHTML = categories.map(cat => `
         <li>
           <button onclick="filterCategory('${cat}'); toggleMobileNav();" class="w-full text-left py-1 text-xs hover:text-seBlue flex items-center">
-            <i class="fa-solid fa-chevron-right text-[10px] text-sub mr-2"></i> ${cat}
+            <span class="mr-2 text-[10px] text-sub">•</span> ${cat}
           </button>
         </li>
       `).join('');
@@ -358,7 +362,7 @@
         <div class="bg-card rounded-xl border overflow-hidden hover:shadow-lg transition flex flex-col group">
           <div class="bg-slate-100 dark:bg-slate-800 aspect-square overflow-hidden relative">
             <img onclick="navigateTo('product', ${p.id})" src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300 cursor-pointer">
-            <button onclick="toggleWishlist(${p.id})" class="absolute top-2 right-2 bg-white/90 dark:bg-slate-900/90 p-2 rounded-full text-xs text-sub hover:text-rose-500 transition shadow-sm">
+            <button onclick="toggleWishlist(${p.id})" class="absolute top-2 left-2 bg-white/90 dark:bg-slate-900/90 p-2 rounded-full text-xs text-sub hover:text-rose-500 transition shadow-sm">
               <i class="${isWishlisted ? 'fa-solid fa-heart text-rose-500' : 'fa-regular fa-heart'}"></i>
             </button>
           </div>
@@ -392,23 +396,34 @@
         <section class="max-w-5xl mx-auto px-4 py-8 sm:py-10">
           <button onclick="navigateTo('home')" class="text-sub hover:text-seBlue text-xs font-bold mb-6 flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Back to Catalog</button>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 bg-card p-6 sm:p-8 rounded-2xl border shadow-sm">
-            <div class="aspect-square rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800">
+            <div class="aspect-square rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 relative">
               <img src="${p.image}" class="w-full h-full object-cover">
+              <button onclick="toggleWishlist(${p.id})" class="absolute top-2 left-2 bg-white/90 dark:bg-slate-900/90 p-2 rounded-full text-xs text-sub hover:text-rose-500 transition shadow-sm">
+                <i class="${wishlist.includes(p.id) ? 'fa-solid fa-heart text-rose-500' : 'fa-regular fa-heart'}"></i>
+              </button>
             </div>
             <div class="flex flex-col justify-center">
               <span class="text-xs font-bold uppercase tracking-wider text-seBlue">${p.category}</span>
               <h1 class="text-xl sm:text-2xl font-bold text-main mt-2">${p.name}</h1>
               <p class="text-sub text-xs sm:text-sm mt-4 leading-relaxed">${p.desc}</p>
+
+              <div class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                <h4 class="text-xs font-bold text-main uppercase tracking-wider mb-2">Product Information</h4>
+                <p class="text-xs text-sub leading-relaxed">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                </p>
+              </div>
+
               <div class="mt-6 flex items-baseline gap-3">
                 <span class="text-2xl sm:text-3xl font-black text-main">Rs. ${p.price.toLocaleString()}</span>
                 <span class="text-xs sm:text-sm text-sub line-through">Rs. ${p.originalPrice.toLocaleString()}</span>
               </div>
               
               <div class="mt-6 flex items-center gap-4">
-                <div class="flex items-center border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-xl overflow-hidden">
-                  <button onclick="updateCartQty(${p.id}, -1)" class="w-10 h-10 font-bold text-main hover:bg-seBlue hover:text-white transition flex items-center justify-center text-base ${qty === 0 ? 'opacity-40 cursor-not-allowed' : ''}" ${qty === 0 ? 'disabled' : ''}>-</button>
-                  <span class="px-4 text-sm font-bold text-main">${qty}</span>
-                  <button onclick="addToCart(${p.id})" class="w-10 h-10 font-bold text-main hover:bg-seBlue hover:text-white transition flex items-center justify-center text-base">+</button>
+                <div class="flex items-center border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 rounded-lg overflow-hidden shadow-sm">
+                  <button onclick="updateCartQty(${p.id}, -1)" class="w-8 h-8 font-bold text-main hover:bg-seBlue hover:text-white transition flex items-center justify-center text-sm ${qty === 0 ? 'opacity-40 cursor-not-allowed' : ''}" ${qty === 0 ? 'disabled' : ''}>-</button>
+                  <span class="px-2.5 text-xs font-bold text-main min-w-[20px] text-center">${qty}</span>
+                  <button onclick="addToCart(${p.id})" class="w-8 h-8 font-bold text-main hover:bg-seBlue hover:text-white transition flex items-center justify-center text-sm">+</button>
                 </div>
               </div>
             </div>
@@ -428,6 +443,10 @@
                 <input type="text" value="${currentUser ? currentUser.name : ''}" required class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2.5 rounded-lg text-sm focus:outline-none focus:border-seBlue">
               </div>
               <div>
+                <label class="block text-xs font-semibold text-sub mb-1">Phone Number</label>
+                <input type="tel" placeholder="+92 300 0000000" required class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2.5 rounded-lg text-sm focus:outline-none focus:border-seBlue">
+              </div>
+              <div>
                 <label class="block text-xs font-semibold text-sub mb-1">Shipping Address</label>
                 <textarea required rows="3" class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2.5 rounded-lg text-sm focus:outline-none focus:border-seBlue" placeholder="House / Flat #, Street, City">${currentUser ? currentUser.address : ''}</textarea>
               </div>
@@ -436,20 +455,25 @@
                 <label class="block text-xs font-semibold text-sub mb-2">Payment Option</label>
                 <div class="grid grid-cols-2 gap-3">
                   <label class="border border-seBlue bg-seBlue-light/20 p-3 rounded-xl flex items-center gap-3 cursor-pointer">
-                    <input type="radio" name="payment" value="cod" checked class="accent-seBlue">
+                    <input type="radio" name="payment" value="cod" checked onchange="toggleOnlinePaymentPhone(false)" class="accent-seBlue">
                     <div>
                       <span class="block text-xs font-bold text-main">Cash on Delivery</span>
                       <span class="text-[10px] text-sub">Pay at doorstep</span>
                     </div>
                   </label>
                   <label class="border border-slate-200 dark:border-slate-700 p-3 rounded-xl flex items-center gap-3 cursor-pointer hover:border-seBlue">
-                    <input type="radio" name="payment" value="online" class="accent-seBlue">
+                    <input type="radio" name="payment" value="online" onchange="toggleOnlinePaymentPhone(true)" class="accent-seBlue">
                     <div>
                       <span class="block text-xs font-bold text-main">Online Payment</span>
                       <span class="text-[10px] text-sub">Card / Mobile Wallet</span>
                     </div>
                   </label>
                 </div>
+              </div>
+
+              <div id="online-payment-phone-container" class="hidden pt-2">
+                <label class="block text-xs font-semibold text-sub mb-1">Online Payment Phone Number / JazzCash / EasyPaisa</label>
+                <input type="tel" id="online-phone-input" placeholder="03XXXXXXXXX" class="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-main p-2.5 rounded-lg text-sm focus:outline-none focus:border-seBlue">
               </div>
 
               <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 rounded-xl transition shadow-md mt-6 text-sm">
@@ -461,9 +485,30 @@
       `;
     }
 
+    function toggleOnlinePaymentPhone(show) {
+      const container = document.getElementById('online-payment-phone-container');
+      const input = document.getElementById('online-phone-input');
+      if (container) {
+        if (show) {
+          container.classList.remove('hidden');
+          if (input) input.required = true;
+        } else {
+          container.classList.add('hidden');
+          if (input) input.required = false;
+        }
+      }
+    }
+
     function renderAccountView() {
       if (!currentUser) {
-        return `<div class="max-w-md mx-auto py-16 text-center text-sub">Please sign in to view your account.</div>`;
+        return `
+          <div class="max-w-md mx-auto py-16 text-center">
+            <p class="text-sub text-xs mb-4">Please sign in to view your account details, wishlist, or order history.</p>
+            <button onclick="toggleAccountModal()" class="bg-seBlue hover:bg-seBlue-dark text-white font-bold text-xs px-6 py-2.5 rounded-lg transition shadow-md inline-flex items-center gap-2">
+              <i class="fa-solid fa-right-to-bracket"></i> Please Sign In
+            </button>
+          </div>
+        `;
       }
 
       return `
@@ -471,8 +516,14 @@
           <!-- User Profile Banner (Header Section) -->
           <div class="bg-card p-6 rounded-2xl border shadow-sm mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-              <!-- Default Avatar Image -->
-              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Profile Picture" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-seBlue shadow">
+              <!-- Aesthetic Minimal Instagram-Style Profile Avatar -->
+              <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 p-[2px] shadow">
+                <div class="w-full h-full bg-card rounded-full p-[2px] flex items-center justify-center">
+                  <div class="w-full h-full bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-seBlue">
+                    <i class="fa-brands fa-instagram text-2xl sm:text-3xl"></i>
+                  </div>
+                </div>
+              </div>
               <div>
                 <h2 class="text-xl font-bold text-main flex items-center gap-2">
                   ${currentUser.name}
@@ -533,10 +584,10 @@
                 </nav>
               </div>
 
-              <!-- Log Out Button (Positioned at bottom right under the block) -->
+              <!-- Red Log Out Button -->
               <div class="mt-4 flex justify-end">
-                <button onclick="logout()" class="text-rose-600 hover:text-rose-700 font-bold text-xs flex items-center gap-1.5 px-3 py-2 transition">
-                  <i class="fa-solid fa-right-from-bracket"></i> Log Out
+                <button onclick="logout()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-1.5 px-4 py-2 rounded-xl transition shadow-sm">
+                  <i class="fa-solid fa-right-from-bracket"></i> Logout
                 </button>
               </div>
             </div>
@@ -578,13 +629,14 @@
                 <div class="border border-slate-200 dark:border-slate-700 p-4 rounded-xl">
                   <div class="flex justify-between items-center mb-2">
                     <span class="text-xs font-bold text-seBlue">Order #${order.id}</span>
-                    <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full font-bold">On the Way</span>
+                    <span class="text-[10px] bg-seBlue/10 text-seBlue border border-seBlue/20 px-2.5 py-0.5 rounded-full font-bold">2 in Order</span>
                   </div>
                   <p class="text-xs text-sub mb-2">Date: ${order.date}</p>
                   <p class="text-xs text-main font-bold mb-3">Total Amount: Rs. ${order.total.toLocaleString()}</p>
-                  <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5">
+                  <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 mb-3">
                     <div class="bg-seBlue h-1.5 rounded-full w-2/3"></div>
                   </div>
+                  <button class="bg-seBlue hover:bg-seBlue-dark text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition">Track Shipment</button>
                 </div>
               `).join('')}
             </div>
@@ -664,9 +716,6 @@
         cart.push({ ...p, qty: 1 });
       }
       saveCart();
-      if (document.getElementById('app').innerHTML.includes('Browse Categories')) {
-        navigateTo('home');
-      }
     }
 
     function updateCartQty(id, delta) {
@@ -678,9 +727,6 @@
         }
       }
       saveCart();
-      if (document.getElementById('app').innerHTML.includes('Browse Categories')) {
-        navigateTo('home');
-      }
     }
 
     function removeFromCart(id) {
@@ -689,56 +735,119 @@
     }
 
     function toggleWishlist(id) {
+      if (!currentUser) {
+        toggleAccountModal();
+        return;
+      }
       if (wishlist.includes(id)) {
         wishlist = wishlist.filter(wId => wId !== id);
       } else {
         wishlist.push(id);
       }
       saveWishlist();
-      navigateTo('home');
+      updateWishlistUI();
+    }
+
+    function updateWishlistUI() {
+      const currentView = document.getElementById('app');
+      if (currentView) {
+        if (currentView.innerHTML.includes('Browse Categories')) {
+          renderCardButtonsOnly();
+        } else if (currentView.innerHTML.includes('Back to Catalog')) {
+          const detailHeart = currentView.querySelector('.fa-heart');
+          if (detailHeart) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const activeId = products.find(p => currentView.innerHTML.includes(p.name))?.id;
+            if (activeId) {
+              const isW = wishlist.includes(activeId);
+              detailHeart.className = isW ? 'fa-solid fa-heart text-rose-500' : 'fa-regular fa-heart';
+            }
+          }
+        }
+      }
+    }
+
+    function renderCardButtonsOnly() {
+      products.forEach(p => {
+        const item = cart.find(c => c.id === p.id);
+        const qty = item ? item.qty : 0;
+        const isWishlisted = wishlist.includes(p.id);
+
+        const card = document.querySelector(`[onclick*="navigateTo('product', ${p.id})"]`)?.closest('.bg-card');
+        if (card) {
+          const qtySpan = card.querySelector('span.min-w-\\[20px\\]');
+          if (qtySpan) qtySpan.innerText = qty;
+
+          const minusBtn = card.querySelectorAll('button')[1];
+          if (minusBtn) {
+            if (qty === 0) {
+              minusBtn.classList.add('opacity-40', 'cursor-not-allowed');
+              minusBtn.disabled = true;
+            } else {
+              minusBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+              minusBtn.disabled = false;
+            }
+          }
+
+          const heartIcon = card.querySelector('.fa-heart');
+          if (heartIcon) {
+            heartIcon.className = isWishlisted ? 'fa-solid fa-heart text-rose-500' : 'fa-regular fa-heart';
+          }
+        }
+      });
     }
 
     function updateCartUI() {
       const totalCount = cart.reduce((acc, item) => acc + item.qty, 0);
       const totalAmount = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
       
-      document.getElementById('cart-badge').innerText = totalCount;
+      const badge = document.getElementById('cart-badge');
+      if (badge) badge.innerText = totalCount;
+
       const cartContainer = document.getElementById('cart-items');
       
-      if (cart.length === 0) {
-        cartContainer.innerHTML = `<p class="text-sub text-xs text-center py-8">Your cart is currently empty.</p>`;
-      } else {
-        cartContainer.innerHTML = cart.map(item => `
-          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-            <div class="flex items-center gap-3">
-              <img src="${item.image}" class="w-12 h-12 rounded object-cover">
-              <div>
-                <h4 class="text-xs font-semibold text-main line-clamp-1">${item.name}</h4>
-                <span class="text-xs text-sub">Rs. ${item.price.toLocaleString()}</span>
+      if (cartContainer) {
+        if (cart.length === 0) {
+          cartContainer.innerHTML = `<p class="text-sub text-xs text-center py-8">Your cart is currently empty.</p>`;
+        } else {
+          cartContainer.innerHTML = cart.map(item => `
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div class="flex items-center gap-3">
+                <img src="${item.image}" class="w-12 h-12 rounded object-cover">
+                <div>
+                  <h4 class="text-xs font-semibold text-main line-clamp-1">${item.name}</h4>
+                  <span class="text-xs text-sub">Price: Rs. ${item.price.toLocaleString()}</span>
+                  <span class="text-xs text-seBlue font-bold block">Total: Rs. ${(item.price * item.qty).toLocaleString()}</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="flex items-center border border-slate-200 dark:border-slate-700 rounded-lg">
+                  <button onclick="updateCartQty(${item.id}, -1)" class="px-2 py-0.5 text-sub hover:text-seBlue text-xs">-</button>
+                  <span class="px-2 text-xs font-bold text-main">${item.qty}</span>
+                  <button onclick="addToCart(${item.id})" class="px-2 py-0.5 text-sub hover:text-seBlue text-xs">+</button>
+                </div>
+                <button onclick="removeFromCart(${item.id})" class="text-rose-500 hover:text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button>
               </div>
             </div>
-            <div class="flex items-center gap-3">
-              <div class="flex items-center border border-slate-200 dark:border-slate-700 rounded-lg">
-                <button onclick="updateCartQty(${item.id}, -1)" class="px-2 py-0.5 text-sub hover:text-seBlue text-xs">-</button>
-                <span class="px-2 text-xs font-bold text-main">${item.qty}</span>
-                <button onclick="addToCart(${item.id})" class="px-2 py-0.5 text-sub hover:text-seBlue text-xs">+</button>
-              </div>
-              <button onclick="removeFromCart(${item.id})" class="text-rose-500 hover:text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button>
-            </div>
-          </div>
-        `).join('');
+          `).join('');
+        }
       }
 
-      document.getElementById('cart-total').innerText = `Rs. ${totalAmount.toLocaleString()}`;
+      const cartTotal = document.getElementById('cart-total');
+      if (cartTotal) cartTotal.innerText = `Rs. ${totalAmount.toLocaleString()}`;
 
       const floatBar = document.getElementById('floating-checkout-bar');
-      if (totalCount > 0) {
-        floatBar.classList.remove('hidden');
-        document.getElementById('floating-cart-count').innerText = `${totalCount} Item${totalCount > 1 ? 's' : ''}`;
-        document.getElementById('floating-cart-total').innerText = `Rs. ${totalAmount.toLocaleString()}`;
-      } else {
-        floatBar.classList.add('hidden');
+      if (floatBar) {
+        if (totalCount > 0) {
+          floatBar.classList.remove('hidden');
+          document.getElementById('floating-cart-count').innerText = `${totalCount} Item${totalCount > 1 ? 's' : ''}`;
+          document.getElementById('floating-cart-total').innerText = `Rs. ${totalAmount.toLocaleString()}`;
+        } else {
+          floatBar.classList.add('hidden');
+        }
       }
+
+      renderCardButtonsOnly();
     }
 
     function toggleCartDrawer() {
